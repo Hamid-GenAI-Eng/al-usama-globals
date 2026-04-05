@@ -9,6 +9,11 @@ import Register from "./pages/Register.tsx";
 import ForgotPassword from "./pages/ForgotPassword.tsx";
 import ResetPassword from "./pages/ResetPassword.tsx";
 import ProfileSettings from "./pages/ProfileSettings.tsx";
+import ShipmentList from "./pages/ShipmentList.tsx";
+import CreateShipment from "./pages/CreateShipment.tsx";
+import ShipmentDetails from "./pages/ShipmentDetails.tsx";
+import ShipmentTracking from "./pages/ShipmentTracking.tsx";
+import SearchResults from "./pages/SearchResults.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -26,6 +31,12 @@ const App = () => (
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/profile" element={<ProfileSettings />} />
+          <Route path="/shipments" element={<ShipmentList />} />
+          <Route path="/shipments/create" element={<CreateShipment />} />
+          <Route path="/shipments/search" element={<SearchResults />} />
+          <Route path="/shipments/:id" element={<ShipmentDetails />} />
+          <Route path="/shipments/:id/tracking" element={<ShipmentTracking />} />
+          <Route path="/shipments/:id/edit" element={<CreateShipment />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
