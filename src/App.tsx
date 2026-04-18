@@ -17,6 +17,12 @@ import SearchResults from "./pages/SearchResults.tsx";
 import Documents from "./pages/Documents.tsx";
 import UploadDocument from "./pages/UploadDocument.tsx";
 import DocumentDetails from "./pages/DocumentDetails.tsx";
+import Suppliers from "./pages/Suppliers.tsx";
+import SupplierDetails from "./pages/SupplierDetails.tsx";
+import SupplierForm from "./pages/SupplierForm.tsx";
+import Buyers from "./pages/Buyers.tsx";
+import BuyerDetails from "./pages/BuyerDetails.tsx";
+import BuyerForm from "./pages/BuyerForm.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -43,6 +49,14 @@ const App = () => (
           <Route path="/documents" element={<Documents />} />
           <Route path="/documents/upload" element={<UploadDocument />} />
           <Route path="/documents/:id" element={<DocumentDetails />} />
+          <Route path="/suppliers" element={<Suppliers />} />
+          <Route path="/suppliers/create" element={<SupplierForm />} />
+          <Route path="/suppliers/:id" element={<SupplierDetails />} />
+          <Route path="/suppliers/:id/edit" element={<SupplierForm />} />
+          <Route path="/buyers" element={<Buyers />} />
+          <Route path="/buyers/create" element={<BuyerForm />} />
+          <Route path="/buyers/:id" element={<BuyerDetails />} />
+          <Route path="/buyers/:id/edit" element={<BuyerForm />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
