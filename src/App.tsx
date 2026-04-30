@@ -32,6 +32,10 @@ import SalesOrderDetails from "./pages/SalesOrderDetails.tsx";
 import HSCodeLookup from "./pages/HSCodeLookup.tsx";
 import DutyCalculator from "./pages/DutyCalculator.tsx";
 import WEBOCDeclaration from "./pages/WEBOCDeclaration.tsx";
+import FinancialDashboard from "./pages/FinancialDashboard.tsx";
+import Analytics from "./pages/Analytics.tsx";
+import RBACAdmin from "./pages/RBACAdmin.tsx";
+import Notifications from "./pages/Notifications.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -77,6 +81,10 @@ const App = () => (
           <Route path="/customs/hs-codes" element={<HSCodeLookup />} />
           <Route path="/customs/duty-calculator" element={<DutyCalculator />} />
           <Route path="/customs/weboc" element={<WEBOCDeclaration />} />
+          <Route path="/finance" element={<FinancialDashboard />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/admin/users" element={<RBACAdmin />} />
+          <Route path="/notifications" element={<Notifications />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

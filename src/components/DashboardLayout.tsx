@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Ship, Cog, BarChart3, FileText, HelpCircle, LogOut, Bell, MessageSquare, Search, Menu, X, Users, Building2, ShoppingCart, TrendingUp, Scale } from "lucide-react";
+import { LayoutDashboard, Ship, Cog, BarChart3, FileText, HelpCircle, LogOut, Bell, MessageSquare, Search, Menu, X, Users, Building2, ShoppingCart, TrendingUp, Scale, Wallet, ShieldCheck } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 const navItems = [
@@ -12,7 +12,9 @@ const navItems = [
   { label: "Purchase Orders", icon: ShoppingCart, path: "/orders/purchase" },
   { label: "Sales Orders", icon: TrendingUp, path: "/orders/sales" },
   { label: "Customs", icon: Scale, path: "/customs/hs-codes" },
+  { label: "Finance", icon: Wallet, path: "/finance" },
   { label: "Analytics", icon: BarChart3, path: "/analytics" },
+  { label: "Admin", icon: ShieldCheck, path: "/admin/users" },
   { label: "Settings", icon: Cog, path: "/settings" },
 ];
 
@@ -121,9 +123,10 @@ const DashboardLayout = ({ children, title, showSearch = false, showTabs = false
             )}
           </div>
           <div className="flex items-center gap-4">
-            <button className="relative text-muted-foreground hover:text-foreground">
+            <Link to="/notifications" className="relative text-muted-foreground hover:text-foreground">
               <Bell className="w-5 h-5" />
-            </button>
+              <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-rose-500" />
+            </Link>
             <button className="text-muted-foreground hover:text-foreground">
               <MessageSquare className="w-5 h-5" />
             </button>
