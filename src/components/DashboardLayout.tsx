@@ -123,9 +123,10 @@ const DashboardLayout = ({ children, title, showSearch = false, showTabs = false
             )}
           </div>
           <div className="flex items-center gap-4">
-            <button className="relative text-muted-foreground hover:text-foreground">
+            <Link to="/notifications" className="relative text-muted-foreground hover:text-foreground">
               <Bell className="w-5 h-5" />
-            </button>
+              <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-rose-500" />
+            </Link>
             <button className="text-muted-foreground hover:text-foreground">
               <MessageSquare className="w-5 h-5" />
             </button>
