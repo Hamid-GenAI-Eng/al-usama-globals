@@ -32,6 +32,10 @@ import SalesOrderDetails from "./pages/SalesOrderDetails.tsx";
 import HSCodeLookup from "./pages/HSCodeLookup.tsx";
 import DutyCalculator from "./pages/DutyCalculator.tsx";
 import WEBOCDeclaration from "./pages/WEBOCDeclaration.tsx";
+import FinancialDashboard from "./pages/FinancialDashboard.tsx";
+import Analytics from "./pages/Analytics.tsx";
+import RBACAdmin from "./pages/RBACAdmin.tsx";
+import Notifications from "./pages/Notifications.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
