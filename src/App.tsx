@@ -23,6 +23,15 @@ import SupplierForm from "./pages/SupplierForm.tsx";
 import Buyers from "./pages/Buyers.tsx";
 import BuyerDetails from "./pages/BuyerDetails.tsx";
 import BuyerForm from "./pages/BuyerForm.tsx";
+import PurchaseOrders from "./pages/PurchaseOrders.tsx";
+import SalesOrders from "./pages/SalesOrders.tsx";
+import PurchaseOrderForm from "./pages/PurchaseOrderForm.tsx";
+import SalesOrderForm from "./pages/SalesOrderForm.tsx";
+import PurchaseOrderDetails from "./pages/PurchaseOrderDetails.tsx";
+import SalesOrderDetails from "./pages/SalesOrderDetails.tsx";
+import HSCodeLookup from "./pages/HSCodeLookup.tsx";
+import DutyCalculator from "./pages/DutyCalculator.tsx";
+import WEBOCDeclaration from "./pages/WEBOCDeclaration.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -57,6 +66,17 @@ const App = () => (
           <Route path="/buyers/create" element={<BuyerForm />} />
           <Route path="/buyers/:id" element={<BuyerDetails />} />
           <Route path="/buyers/:id/edit" element={<BuyerForm />} />
+          <Route path="/orders/purchase" element={<PurchaseOrders />} />
+          <Route path="/orders/purchase/create" element={<PurchaseOrderForm />} />
+          <Route path="/orders/purchase/:id" element={<PurchaseOrderDetails />} />
+          <Route path="/orders/purchase/:id/edit" element={<PurchaseOrderForm />} />
+          <Route path="/orders/sales" element={<SalesOrders />} />
+          <Route path="/orders/sales/create" element={<SalesOrderForm />} />
+          <Route path="/orders/sales/:id" element={<SalesOrderDetails />} />
+          <Route path="/orders/sales/:id/edit" element={<SalesOrderForm />} />
+          <Route path="/customs/hs-codes" element={<HSCodeLookup />} />
+          <Route path="/customs/duty-calculator" element={<DutyCalculator />} />
+          <Route path="/customs/weboc" element={<WEBOCDeclaration />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
