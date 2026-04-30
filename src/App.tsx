@@ -81,6 +81,10 @@ const App = () => (
           <Route path="/customs/hs-codes" element={<HSCodeLookup />} />
           <Route path="/customs/duty-calculator" element={<DutyCalculator />} />
           <Route path="/customs/weboc" element={<WEBOCDeclaration />} />
+          <Route path="/finance" element={<FinancialDashboard />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/admin/users" element={<RBACAdmin />} />
+          <Route path="/notifications" element={<Notifications />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
