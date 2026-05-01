@@ -1,44 +1,6 @@
-import { Link } from "react-router-dom";
-import { Plus, Filter, Search, MoreVertical, Building2, Globe, TrendingUp, Users, DollarSign, Package } from "lucide-react";
-import DashboardLayout from "@/components/DashboardLayout";
-
-export type ContactKind = "supplier" | "buyer";
-
-export interface Contact {
-  id: string;
-  name: string;
-  country: string;
-  city: string;
-  contact: string;
-  email: string;
-  taxId: string;
-  totalVolume: string;
-  activeShipments: number;
-  paymentStatus: "PAID" | "PARTIAL" | "OVERDUE";
-  tier: "PLATINUM" | "GOLD" | "SILVER" | "STANDARD";
-}
-
-const tierColor: Record<string, string> = {
-  PLATINUM: "bg-purple-50 text-purple-700 border border-purple-200",
-  GOLD: "bg-amber-50 text-amber-700 border border-amber-200",
-  SILVER: "bg-gray-50 text-gray-700 border border-gray-200",
-  STANDARD: "bg-blue-50 text-blue-700 border border-blue-200",
-};
-
-const paymentColor: Record<string, string> = {
-  PAID: "bg-green-50 text-green-700 border border-green-200",
-  PARTIAL: "bg-amber-50 text-amber-700 border border-amber-200",
-  OVERDUE: "bg-red-50 text-red-700 border border-red-200",
-};
-
-interface Props {
-  kind: ContactKind;
-  contacts: Contact[];
-}
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Plus, Filter, Search, MoreVertical, Building2, Globe, TrendingUp, Users, DollarSign, Package } from "lucide-react";
+import { Plus, Globe, TrendingUp, Users, DollarSign, Building2, MoreVertical, Search } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
 import api from "@/lib/api";
 
@@ -81,9 +43,9 @@ const ContactsList = ({ kind }: { kind: ContactKind }) => {
   }, [kind]);
 
   const filteredContacts = contacts.filter(c => 
-    c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.country.toLowerCase().includes(searchTerm.toLowerCase())
+    c.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.country?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
