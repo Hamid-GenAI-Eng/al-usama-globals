@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Ship, Cog, BarChart3, FileText, HelpCircle, LogOut, Bell, MessageSquare, Search, Menu, X, Users, Building2, ShoppingCart, TrendingUp, Scale, Wallet, ShieldCheck } from "lucide-react";
+import { LayoutDashboard, Ship, Cog, BarChart3, FileText, HelpCircle, LogOut, Bell, MessageSquare, Search, Menu, Users, Building2, ShoppingCart, TrendingUp, Scale, Wallet, ShieldCheck, History, Coins, FileBarChart2, UserCircle2 } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 const navItems = [
@@ -13,8 +13,12 @@ const navItems = [
   { label: "Sales Orders", icon: TrendingUp, path: "/orders/sales" },
   { label: "Customs", icon: Scale, path: "/customs/hs-codes" },
   { label: "Finance", icon: Wallet, path: "/finance" },
+  { label: "Exchange Rates", icon: Coins, path: "/finance/exchange-rates" },
   { label: "Analytics", icon: BarChart3, path: "/analytics" },
+  { label: "Reports", icon: FileBarChart2, path: "/reports" },
   { label: "Admin", icon: ShieldCheck, path: "/admin/users" },
+  { label: "Audit Log", icon: History, path: "/admin/audit-log" },
+  { label: "Client Portal", icon: UserCircle2, path: "/client/portal" },
   { label: "Settings", icon: Cog, path: "/settings" },
 ];
 
