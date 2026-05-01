@@ -75,24 +75,24 @@ const Register = () => {
               Fill in your corporate details to request system access.
             </p>
 
-            <form className="mt-8 space-y-6" onSubmit={(e) => e.preventDefault()}>
+            <form className="mt-8 space-y-6" onSubmit={onSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-foreground uppercase tracking-wider mb-2">
-                    Business Name
-                  </label>
+                  <label className="block text-xs font-bold text-foreground uppercase tracking-wider mb-2">Business Name</label>
                   <input
                     type="text"
-                    placeholder="e.g. AL-Usama-Import and Export System Lt"
+                    value={form.business}
+                    onChange={(e) => setForm({ ...form, business: e.target.value })}
+                    placeholder="e.g. AL-Usama Trading Co."
                     className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-foreground uppercase tracking-wider mb-2">
-                    Admin Name
-                  </label>
+                  <label className="block text-xs font-bold text-foreground uppercase tracking-wider mb-2">Admin Name</label>
                   <input
                     type="text"
+                    value={form.admin}
+                    onChange={(e) => setForm({ ...form, admin: e.target.value })}
                     placeholder="Full legal name"
                     className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
                   />
@@ -100,34 +100,32 @@ const Register = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-foreground uppercase tracking-wider mb-2">
-                  Corporate Email Address
-                </label>
+                <label className="block text-xs font-bold text-foreground uppercase tracking-wider mb-2">Corporate Email Address</label>
                 <div className="relative">
                   <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <input
                     type="email"
-                    placeholder="admin@alusama-global.com"
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    placeholder="admin@al-usama.com"
                     className="w-full pl-12 pr-4 py-3 rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-foreground uppercase tracking-wider mb-2">
-                  Access Password
-                </label>
+                <label className="block text-xs font-bold text-foreground uppercase tracking-wider mb-2">Access Password</label>
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <input
                     type="password"
-                    defaultValue="password1234"
+                    value={form.password}
+                    onChange={(e) => setForm({ ...form, password: e.target.value })}
+                    placeholder="At least 8 characters"
                     className="w-full pl-12 pr-4 py-3 rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
                   />
                 </div>
-                <p className="text-xs text-muted-foreground mt-2">
-                  Must contain at least 12 characters, including corporate identifiers.
-                </p>
+                <p className="text-xs text-muted-foreground mt-2">Must contain at least 8 characters.</p>
               </div>
 
               <button
