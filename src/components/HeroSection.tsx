@@ -52,7 +52,7 @@ const HeroSection = () => {
             The Digital Ledger for <span className="text-primary">Global Logistics.</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-lg leading-relaxed">
-            Al-Usama Global empowers enterprise trade with a sophisticated SaaS platform. Manage imports, exports, and compliance with the precision of an architectural ledger.
+            AL-Usama-Import and Export System empowers enterprise trade with a sophisticated SaaS platform. Manage imports, exports, and compliance with the precision of an architectural ledger.
           </p>
           <div className="flex flex-wrap gap-4">
             <Link to="/login" className="gradient-primary text-primary-foreground px-8 py-4 rounded-full font-bold shadow-lg hover:opacity-90 transition-all">

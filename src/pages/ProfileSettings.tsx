@@ -101,7 +101,7 @@ const ProfileSettings = () => {
                     <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                     <input
                       type="text"
-                      defaultValue="Al-Usama Global Logistics"
+                      defaultValue="AL-Usama-Import and Export System Logistics"
                       className="w-full pl-12 pr-4 py-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
                     />
                   </div>

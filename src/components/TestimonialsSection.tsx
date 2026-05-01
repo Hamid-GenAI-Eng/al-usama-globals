@@ -7,7 +7,7 @@ const TestimonialsSection = () => (
         <div className="space-y-8">
           <span className="text-tertiary font-black text-6xl opacity-20">"</span>
           <p className="text-3xl font-headline font-semibold text-foreground leading-tight italic">
-            Al-Usama Global has completely transformed how we handle our Mediterranean exports. The 'Digital Ledger' approach provides a level of clarity we simply couldn't find elsewhere.
+            AL-Usama-Import and Export System has completely transformed how we handle our Mediterranean exports. The 'Digital Ledger' approach provides a level of clarity we simply couldn't find elsewhere.
           </p>
           <div className="flex items-center gap-4">
             <img src={testimonialImg} alt="Marco Valenti" className="w-14 h-14 rounded-full object-cover" loading="lazy" width={56} height={56} />

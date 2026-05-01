@@ -20,7 +20,7 @@ const ContactForm = ({ kind }: Props) => {
 
   // Prefill if editing
   const [form, setForm] = useState({
-    name: isEdit ? (isSupplier ? "Shanghai Heavy Industries Co. Ltd" : "Al-Usama Global Trading LLC") : "",
+    name: isEdit ? (isSupplier ? "Shanghai Heavy Industries Co. Ltd" : "AL-Usama-Import and Export System Trading LLC") : "",
     contactPerson: isEdit ? "Mr. Wang Liu" : "",
     email: isEdit ? (isSupplier ? "wang.liu@shi-china.com" : "ops@al-usama.ae") : "",
     phone: isEdit ? "+86 21 5588 9921" : "",
@@ -76,7 +76,7 @@ const ContactForm = ({ kind }: Props) => {
               <div className="space-y-5">
                 <div>
                   <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 block">{entity} Name *</label>
-                  <input required value={form.name} onChange={(e) => update("name", e.target.value)} type="text" placeholder={isSupplier ? "e.g. Shanghai Heavy Industries" : "e.g. Al-Usama Global Trading"} className="w-full px-4 py-3 bg-muted rounded-lg text-sm border-none outline-none focus:ring-2 focus:ring-primary/20" />
+                  <input required value={form.name} onChange={(e) => update("name", e.target.value)} type="text" placeholder={isSupplier ? "e.g. Shanghai Heavy Industries" : "e.g. AL-Usama-Import and Export System Trading"} className="w-full px-4 py-3 bg-muted rounded-lg text-sm border-none outline-none focus:ring-2 focus:ring-primary/20" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>

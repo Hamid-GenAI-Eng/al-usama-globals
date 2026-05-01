@@ -2,7 +2,7 @@ const Footer = () => (
   <footer className="bg-surface-bright py-12">
     <div className="grid grid-cols-1 md:grid-cols-4 gap-8 px-8 max-w-7xl mx-auto">
       <div className="space-y-6">
-        <div className="text-lg font-black text-foreground uppercase tracking-tighter font-headline">Al-Usama Global</div>
+        <div className="text-lg font-black text-foreground uppercase tracking-tighter font-headline">AL-Usama-Import and Export System</div>
         <p className="text-muted-foreground text-xs leading-relaxed max-w-xs">
           Redefining global shipping with architectural precision and digital intelligence.
         </p>
@@ -25,7 +25,7 @@ const Footer = () => (
       ))}
     </div>
     <div className="max-w-7xl mx-auto px-8 mt-12 pt-12 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
-      <p className="text-muted-foreground text-xs">© 2024 Al-Usama Global Logistics. All rights reserved.</p>
+      <p className="text-muted-foreground text-xs">© 2024 AL-Usama-Import and Export System Logistics. All rights reserved.</p>
       <div className="flex gap-6">
         {["🌐", "✉️", "🔗"].map((icon, i) => (
           <a key={i} href="#" className="text-muted-foreground hover:text-primary transition-colors text-lg">{icon}</a>
