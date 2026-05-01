@@ -1,12 +1,26 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Globe } from "lucide-react";
+import { toast } from "sonner";
 import loginHero from "@/assets/login-hero.jpg";
 import AuthFooter from "@/components/AuthFooter";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [keepLoggedIn, setKeepLoggedIn] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("password1234");
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim() || !password.trim()) {
+      toast.error("Please enter your email and password");
+      return;
+    }
+    toast.success("Welcome back");
+    navigate("/dashboard");
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
