@@ -1,7 +1,8 @@
 import { useState } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
-import { CheckCircle2, Circle, FileCheck, Download, Send } from "lucide-react";
+import { CheckCircle2, Circle, FileCheck, Download, Send, Ship, Building2, ClipboardList, ShieldAlert, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import api from "@/lib/api";
 
 const checklist = [
   { id: "iban", label: "Importer NTN & STRN registered", required: true },
@@ -16,151 +17,241 @@ const checklist = [
 
 const WEBOCDeclaration = () => {
   const [step, setStep] = useState(1);
+  const [submitting, setSubmitting] = useState(false);
   const [gdNumber] = useState("KAPE-HC-" + Math.floor(Math.random() * 900000 + 100000));
-  const [declarationType, setDeclarationType] = useState("Home Consumption");
-  const [collectorate, setCollectorate] = useState("Karachi (Port Qasim)");
-  const [importerNTN, setImporterNTN] = useState("");
-  const [consignee, setConsignee] = useState("");
-  const [vessel, setVessel] = useState("");
-  const [igmNumber, setIgmNumber] = useState("");
-  const [bl, setBl] = useState("");
+  const [formData, setFormData] = useState({
+    declarationType: "Home Consumption",
+    collectorate: "Karachi (Port Qasim)",
+    modeOfTransport: "Sea",
+    currency: "USD",
+    importerNTN: "",
+    consignee: "",
+    vessel: "",
+    igmNumber: "",
+    bl: "",
+  });
   const [checked, setChecked] = useState<string[]>([]);
 
+  const updateForm = (key: string, val: string) => setFormData(p => ({ ...p, [key]: val }));
   const toggle = (id: string) => setChecked(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id]);
   const requiredDone = checklist.filter(c => c.required).every(c => checked.includes(c.id));
 
-  const submit = () => {
+  const submit = async () => {
     if (!requiredDone) { toast.error("Complete all required items"); return; }
-    toast.success(`GD ${gdNumber} prepared for submission to WEBOC`);
+    
+    setSubmitting(true);
+    try {
+      await api.post("/customs/weboc", {
+        gdNumber,
+        ...formData,
+        documents: checked
+      });
+      toast.success(`GD ${gdNumber} successfully prepared and filed with WEBOC`);
+      setStep(4); // Move to final if not there
+    } catch (error) {
+      console.error("Submission failed:", error);
+      toast.error("Failed to transmit data to WEBOC gateway");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const steps = ["Declaration Info", "Importer & Consignment", "Documents Checklist", "Review & Submit"];
+  const steps = [
+    { name: "Declaration Info", icon: Building2 },
+    { name: "Logistics", icon: Ship },
+    { name: "Checklist", icon: ClipboardList },
+    { name: "Submission", icon: Send }
+  ];
 
   return (
-    <DashboardLayout>
+    <DashboardLayout title="WEBOC Filing">
       <div className="space-y-6 max-w-5xl">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold font-headline">WEBOC Declaration Helper</h1>
-            <p className="text-sm text-muted-foreground mt-1">Prepare Goods Declaration (GD) for Pakistan Customs WEBOC system</p>
+        <div className="flex items-center justify-between bg-white p-6 rounded-2xl border border-border shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+              <FileCheck className="w-6 h-6 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-xl font-black font-headline text-foreground uppercase tracking-tight">WEBOC Digital Gateway</h1>
+              <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest opacity-60">Goods Declaration (GD) Preparation</p>
+            </div>
           </div>
-          <div className="text-right">
-            <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">GD Reference</p>
-            <p className="font-mono font-bold text-primary">{gdNumber}</p>
+          <div className="text-right px-4 py-2 bg-muted/30 rounded-xl border border-border/50">
+            <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-black mb-1 opacity-50">Draft Reference</p>
+            <p className="font-mono font-black text-primary text-sm">{gdNumber}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-border p-6">
-          <div className="flex items-center justify-between mb-8">
+        <div className="bg-white rounded-3xl border border-border shadow-xl shadow-muted/20 overflow-hidden">
+          <div className="flex items-center border-b border-border bg-muted/5">
             {steps.map((s, i) => (
-              <div key={s} className="flex items-center flex-1">
-                <div className="flex flex-col items-center">
-                  <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm ${step > i + 1 ? "bg-emerald-500 text-white" : step === i + 1 ? "bg-primary text-white" : "bg-muted text-muted-foreground"}`}>
-                    {step > i + 1 ? <CheckCircle2 className="w-5 h-5" /> : i + 1}
+              <div key={s.name} className={`flex-1 flex items-center justify-center py-5 relative ${step === i + 1 ? "bg-white" : ""}`}>
+                <div className={`flex items-center gap-2 ${step >= i + 1 ? "text-primary" : "text-muted-foreground opacity-40"}`}>
+                  <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black border-2 ${step >= i + 1 ? "border-primary bg-primary text-white" : "border-muted-foreground"}`}>
+                    {step > i + 1 ? <CheckCircle2 className="w-3 h-3" /> : i + 1}
                   </div>
-                  <p className={`text-xs mt-2 font-semibold ${step >= i + 1 ? "text-foreground" : "text-muted-foreground"}`}>{s}</p>
+                  <span className="text-[10px] font-black uppercase tracking-widest hidden md:inline">{s.name}</span>
                 </div>
-                {i < steps.length - 1 && <div className={`flex-1 h-0.5 mx-2 ${step > i + 1 ? "bg-emerald-500" : "bg-muted"}`} />}
+                {step === i + 1 && <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-t-full" />}
               </div>
             ))}
           </div>
 
-          {step === 1 && (
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground">Declaration Type</label>
-                <select value={declarationType} onChange={e => setDeclarationType(e.target.value)} className="mt-1 w-full px-3 py-2 border border-border rounded-lg text-sm bg-white">
-                  {["Home Consumption", "Warehousing", "Re-export", "Transit", "Export"].map(o => <option key={o}>{o}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground">Collectorate</label>
-                <select value={collectorate} onChange={e => setCollectorate(e.target.value)} className="mt-1 w-full px-3 py-2 border border-border rounded-lg text-sm bg-white">
-                  {["Karachi (Port Qasim)", "Karachi (KICT)", "Lahore (Dry Port)", "Sialkot Airport", "Islamabad Airport", "Peshawar"].map(o => <option key={o}>{o}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground">Mode of Transport</label>
-                <select className="mt-1 w-full px-3 py-2 border border-border rounded-lg text-sm bg-white">
-                  {["Sea", "Air", "Road", "Rail"].map(o => <option key={o}>{o}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground">Currency of Invoice</label>
-                <select className="mt-1 w-full px-3 py-2 border border-border rounded-lg text-sm bg-white">
-                  {["USD", "EUR", "GBP", "CNY", "AED"].map(o => <option key={o}>{o}</option>)}
-                </select>
-              </div>
-            </div>
-          )}
-
-          {step === 2 && (
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground">Importer NTN</label>
-                <input value={importerNTN} onChange={e => setImporterNTN(e.target.value)} placeholder="0000000-0" className="mt-1 w-full px-3 py-2 border border-border rounded-lg text-sm" />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground">Consignee Name</label>
-                <input value={consignee} onChange={e => setConsignee(e.target.value)} className="mt-1 w-full px-3 py-2 border border-border rounded-lg text-sm" />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground">Vessel / Flight</label>
-                <input value={vessel} onChange={e => setVessel(e.target.value)} placeholder="MV / Flight no." className="mt-1 w-full px-3 py-2 border border-border rounded-lg text-sm" />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground">IGM Number</label>
-                <input value={igmNumber} onChange={e => setIgmNumber(e.target.value)} className="mt-1 w-full px-3 py-2 border border-border rounded-lg text-sm" />
-              </div>
-              <div className="col-span-2">
-                <label className="text-xs font-semibold text-muted-foreground">B/L or AWB Number</label>
-                <input value={bl} onChange={e => setBl(e.target.value)} className="mt-1 w-full px-3 py-2 border border-border rounded-lg text-sm" />
-              </div>
-            </div>
-          )}
-
-          {step === 3 && (
-            <div className="space-y-2">
-              {checklist.map(c => (
-                <button type="button" key={c.id} onClick={() => toggle(c.id)} className="w-full flex items-center gap-3 p-3 hover:bg-muted/50 rounded-lg text-left">
-                  {checked.includes(c.id) ? <CheckCircle2 className="w-5 h-5 text-emerald-600" /> : <Circle className="w-5 h-5 text-muted-foreground" />}
-                  <span className="flex-1 text-sm font-medium">{c.label}</span>
-                  {c.required && <span className="text-xs px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 font-semibold">Required</span>}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {step === 4 && (
-            <div className="space-y-4">
-              <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-5 flex gap-3">
-                <FileCheck className="w-6 h-6 text-emerald-600 shrink-0" />
-                <div>
-                  <p className="font-bold text-emerald-900">Declaration ready for submission</p>
-                  <p className="text-sm text-emerald-800 mt-1">All required documents are checked. Review the summary below before submitting to WEBOC.</p>
+          <div className="p-8 min-h-[400px]">
+            {step === 1 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-in fade-in slide-in-from-bottom-4">
+                <div className="space-y-6">
+                  <div>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Declaration Type</label>
+                    <select value={formData.declarationType} onChange={e => updateForm("declarationType", e.target.value)} className="w-full px-4 py-3 bg-muted/20 border border-border rounded-xl text-sm font-bold focus:ring-2 focus:ring-primary/20 outline-none transition-all">
+                      {["Home Consumption", "Warehousing", "Re-export", "Transit", "Export"].map(o => <option key={o}>{o}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Collectorate</label>
+                    <select value={formData.collectorate} onChange={e => updateForm("collectorate", e.target.value)} className="w-full px-4 py-3 bg-muted/20 border border-border rounded-xl text-sm font-bold focus:ring-2 focus:ring-primary/20 outline-none transition-all">
+                      {["Karachi (Port Qasim)", "Karachi (KICT)", "Lahore (Dry Port)", "Sialkot Airport", "Islamabad Airport", "Peshawar"].map(o => <option key={o}>{o}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className="space-y-6">
+                  <div>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Currency of Invoice</label>
+                    <select value={formData.currency} onChange={e => updateForm("currency", e.target.value)} className="w-full px-4 py-3 bg-muted/20 border border-border rounded-xl text-sm font-bold focus:ring-2 focus:ring-primary/20 outline-none transition-all">
+                      {["USD", "EUR", "GBP", "CNY", "AED"].map(o => <option key={o}>{o}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Mode of Transport</label>
+                    <select value={formData.modeOfTransport} onChange={e => updateForm("modeOfTransport", e.target.value)} className="w-full px-4 py-3 bg-muted/20 border border-border rounded-xl text-sm font-bold focus:ring-2 focus:ring-primary/20 outline-none transition-all">
+                      {["Sea", "Air", "Road", "Rail"].map(o => <option key={o}>{o}</option>)}
+                    </select>
+                  </div>
                 </div>
               </div>
-              <div className="bg-muted/30 rounded-xl p-5 grid grid-cols-2 gap-4 text-sm">
-                <div><p className="text-xs text-muted-foreground">GD Number</p><p className="font-mono font-semibold">{gdNumber}</p></div>
-                <div><p className="text-xs text-muted-foreground">Type</p><p className="font-semibold">{declarationType}</p></div>
-                <div><p className="text-xs text-muted-foreground">Collectorate</p><p className="font-semibold">{collectorate}</p></div>
-                <div><p className="text-xs text-muted-foreground">Importer NTN</p><p className="font-semibold">{importerNTN || "—"}</p></div>
-                <div><p className="text-xs text-muted-foreground">Vessel</p><p className="font-semibold">{vessel || "—"}</p></div>
-                <div><p className="text-xs text-muted-foreground">B/L No.</p><p className="font-semibold">{bl || "—"}</p></div>
-              </div>
-            </div>
-          )}
+            )}
 
-          <div className="flex justify-between mt-8 pt-6 border-t border-border">
-            <button type="button" disabled={step === 1} onClick={() => setStep(step - 1)} className="px-4 py-2 border border-border rounded-lg text-sm font-semibold disabled:opacity-50">Back</button>
-            {step < 4 ? (
-              <button type="button" onClick={() => setStep(step + 1)} className="px-6 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-semibold">Next</button>
-            ) : (
-              <div className="flex gap-2">
-                <button type="button" className="flex items-center gap-2 px-4 py-2 border border-border rounded-lg text-sm font-semibold"><Download className="w-4 h-4" /> Export GD</button>
-                <button type="button" onClick={submit} className="flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-semibold"><Send className="w-4 h-4" /> Submit to WEBOC</button>
+            {step === 2 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-in fade-in slide-in-from-bottom-4">
+                <div className="space-y-6">
+                  <div>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Importer NTN</label>
+                    <input value={formData.importerNTN} onChange={e => updateForm("importerNTN", e.target.value)} placeholder="0000000-0" className="w-full px-4 py-3 bg-muted/20 border border-border rounded-xl text-sm font-bold focus:ring-2 focus:ring-primary/20 outline-none transition-all" />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Vessel / Flight Reference</label>
+                    <input value={formData.vessel} onChange={e => updateForm("vessel", e.target.value)} placeholder="MV PACIFIC / EK-601" className="w-full px-4 py-3 bg-muted/20 border border-border rounded-xl text-sm font-bold focus:ring-2 focus:ring-primary/20 outline-none transition-all" />
+                  </div>
+                </div>
+                <div className="space-y-6">
+                  <div>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Consignee Name</label>
+                    <input value={formData.consignee} onChange={e => updateForm("consignee", e.target.value)} className="w-full px-4 py-3 bg-muted/20 border border-border rounded-xl text-sm font-bold focus:ring-2 focus:ring-primary/20 outline-none transition-all" />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">B/L or AWB Number</label>
+                    <input value={formData.bl} onChange={e => updateForm("bl", e.target.value)} className="w-full px-4 py-3 bg-muted/20 border border-border rounded-xl text-sm font-bold focus:ring-2 focus:ring-primary/20 outline-none transition-all" />
+                  </div>
+                </div>
               </div>
             )}
+
+            {step === 3 && (
+              <div className="space-y-3 animate-in fade-in slide-in-from-bottom-4">
+                <div className="bg-primary/5 p-4 rounded-xl border border-primary/20 mb-6">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-1">Compliance Check</p>
+                  <p className="text-xs text-muted-foreground font-medium">Please verify all mandatory documents are digitized and attached.</p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {checklist.map(c => (
+                    <button type="button" key={c.id} onClick={() => toggle(c.id)} className={`flex items-center gap-4 p-4 rounded-2xl border transition-all ${checked.includes(c.id) ? "bg-emerald-50 border-emerald-200" : "bg-white border-border hover:border-primary/40 shadow-sm"}`}>
+                      {checked.includes(c.id) ? <CheckCircle2 className="w-5 h-5 text-emerald-600" /> : <Circle className="w-5 h-5 text-muted-foreground opacity-30" />}
+                      <div className="flex-1 text-left">
+                        <p className={`text-xs font-black uppercase tracking-tight ${checked.includes(c.id) ? "text-emerald-900" : "text-foreground"}`}>{c.label}</p>
+                        {c.required && <p className="text-[9px] font-bold text-rose-500 uppercase mt-0.5">Mandatory</p>}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {step === 4 && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+                <div className="flex flex-col items-center text-center space-y-4">
+                  <div className="w-20 h-20 bg-emerald-500 text-white rounded-3xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                    <Send className="w-10 h-10" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-black font-headline text-foreground uppercase tracking-tight">Final Transmission</h2>
+                    <p className="text-sm text-muted-foreground font-medium max-w-md mx-auto">Review the digital goods declaration before final filing into the WEBOC ecosystem.</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {[
+                    { label: "Type", val: formData.declarationType },
+                    { label: "Collectorate", val: formData.collectorate },
+                    { label: "Importer NTN", val: formData.importerNTN || "N/A" },
+                    { label: "B/L No", val: formData.bl || "N/A" },
+                  ].map(x => (
+                    <div key={x.label} className="p-4 bg-muted/20 border border-border/50 rounded-2xl">
+                      <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-1">{x.label}</p>
+                      <p className="text-xs font-bold text-foreground truncate">{x.val}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="bg-amber-50 border-2 border-dashed border-amber-200 rounded-3xl p-6 flex gap-4">
+                  <ShieldAlert className="w-6 h-6 text-amber-600 shrink-0" />
+                  <div>
+                    <p className="text-xs font-black text-amber-900 uppercase tracking-widest">Legal Disclaimer</p>
+                    <p className="text-[11px] text-amber-800/80 font-bold leading-relaxed mt-1">
+                      ANY MISDECLARATION OF VALUE, WEIGHT, OR PCT CODE IS PUNISHABLE UNDER THE CUSTOMS ACT 1969. 
+                      ENSURE ALL DATA MATCHES THE COMMERCIAL INVOICE EXACTLY.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="p-8 bg-muted/5 border-t border-border flex justify-between items-center">
+            <button 
+              type="button" 
+              disabled={step === 1 || submitting} 
+              onClick={() => setStep(step - 1)} 
+              className="px-6 py-3 border-2 border-border rounded-xl text-xs font-black uppercase tracking-widest hover:bg-white disabled:opacity-30 transition-all"
+            >
+              Back
+            </button>
+            
+            <div className="flex gap-4">
+              {step < 4 ? (
+                <button 
+                  type="button" 
+                  onClick={() => setStep(step + 1)} 
+                  className="px-8 py-3 bg-primary text-primary-foreground rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-primary/20 hover:opacity-90 transition-all"
+                >
+                  Continue
+                </button>
+              ) : (
+                <>
+                  <button type="button" className="hidden md:flex items-center gap-2 px-6 py-3 border-2 border-border rounded-xl text-xs font-black uppercase tracking-widest hover:bg-white transition-all">
+                    <Download className="w-4 h-4" /> Save PDF
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={submit} 
+                    disabled={submitting}
+                    className="flex items-center gap-2 px-10 py-3 bg-emerald-600 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 disabled:opacity-50 transition-all"
+                  >
+                    {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                    {submitting ? "Transmitting..." : "Submit to WEBOC"}
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>

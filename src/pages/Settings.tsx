@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Building2, Bell, Plug, Globe, Palette, Shield, Save, Key, Mail, Phone } from "lucide-react";
 import { toast } from "sonner";
+import api from "@/lib/api";
 
 const tabs = [
   { id: "agency", label: "Agency", icon: Building2 },
@@ -14,19 +15,42 @@ const tabs = [
 
 const Settings = () => {
   const [active, setActive] = useState("agency");
+  const [loading, setLoading] = useState(false);
   const [agency, setAgency] = useState({
     name: "AL-Usama-Import and Export System",
-    legal: "AL-Usama Trading Co. (Pvt) Ltd",
+    legalName: "AL-Usama Trading Co. (Pvt) Ltd",
     ntn: "1234567-8",
     strn: "0987654321",
     address: "Suite 401, Trade Centre, I.I. Chundrigar Rd, Karachi 74000",
     phone: "+92 21 3263 4500",
     email: "ops@al-usama.com",
-    timezone: "Asia/Karachi",
-    fiscalStart: "July",
   });
 
-  const save = () => toast.success("Settings saved successfully");
+  useEffect(() => {
+    const fetchSettings = async () => {
+      setLoading(true);
+      try {
+        const response = await api.get("/settings/agency");
+        if (response.data.data) {
+          setAgency(response.data.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch settings:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  const save = async () => {
+    try {
+      await api.patch("/settings/agency", agency);
+      toast.success("Settings saved successfully");
+    } catch (error) {
+      toast.error("Failed to save settings");
+    }
+  };
 
   return (
     <DashboardLayout title="Settings">
@@ -50,7 +74,7 @@ const Settings = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
-                  ["Display Name", "name"], ["Legal Name", "legal"],
+                  ["Display Name", "name"], ["Legal Name", "legalName"],
                   ["NTN", "ntn"], ["STRN", "strn"],
                   ["Phone", "phone"], ["Operations Email", "email"],
                 ].map(([label, key]) => (

@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
-import { Download, FileSpreadsheet, FileText, Filter, Calendar } from "lucide-react";
+import { Download, FileSpreadsheet, FileText, Filter, Calendar, TrendingUp, Ship, Clock, DollarSign } from "lucide-react";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, PieChart, Pie, Cell } from "recharts";
 import { toast } from "sonner";
+import api from "@/lib/api";
 
 const shipmentVolume = [
   { month: "Nov", imports: 18, exports: 22 },
@@ -11,14 +12,6 @@ const shipmentVolume = [
   { month: "Feb", imports: 28, exports: 31 },
   { month: "Mar", imports: 36, exports: 34 },
   { month: "Apr", imports: 42, exports: 38 },
-];
-
-const topRoutes = [
-  { route: "Shanghai → Karachi", volume: 142, value: "$2.4M" },
-  { route: "Hamburg → Karachi", volume: 86, value: "$1.8M" },
-  { route: "Karachi → Dubai", volume: 124, value: "$1.6M" },
-  { route: "Karachi → Jeddah", volume: 78, value: "$980K" },
-  { route: "Mumbai → Karachi", volume: 64, value: "$720K" },
 ];
 
 const productCategories = [
@@ -36,32 +29,59 @@ const onTimeData = [
 
 const Analytics = () => {
   const [dateRange, setDateRange] = useState("Last 6 months");
+  const [summary, setSummary] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSummary = async () => {
+      try {
+        const response = await api.get("/reports/summary");
+        setSummary(response.data.data);
+      } catch (error) {
+        console.error("Failed to fetch analytics summary:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSummary();
+  }, []);
 
   const exportReport = (format: string) => toast.success(`Analytics exported as ${format}`);
+
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="p-20 text-center flex flex-col items-center">
+          <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
+          <p className="font-bold text-lg animate-pulse">Processing Global Trade Intelligence...</p>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
-            <h1 className="text-2xl font-bold font-headline">Analytics & Reporting</h1>
+            <h1 className="text-2xl font-bold font-headline">Analytics & Trade Intelligence</h1>
             <p className="text-sm text-muted-foreground mt-1">Operational insights, trade flows, and performance reports</p>
           </div>
-          <div className="flex gap-2">
-            <div className="flex items-center gap-2 px-3 py-2 border border-border rounded-lg text-sm">
+          <div className="flex gap-2 flex-wrap">
+            <div className="flex items-center gap-2 px-3 py-2 border border-border bg-white rounded-lg text-sm shadow-sm">
               <Calendar className="w-4 h-4 text-muted-foreground" />
-              <select value={dateRange} onChange={e => setDateRange(e.target.value)} className="bg-transparent outline-none">
+              <select value={dateRange} onChange={e => setDateRange(e.target.value)} className="bg-transparent outline-none font-medium">
                 {["Last 6 months", "Last 30 days", "This quarter", "YTD", "Custom"].map(o => <option key={o}>{o}</option>)}
               </select>
             </div>
-            <button className="flex items-center gap-2 px-3 py-2 border border-border rounded-lg text-sm">
+            <button className="flex items-center gap-2 px-3 py-2 border border-border bg-white rounded-lg text-sm font-medium shadow-sm">
               <Filter className="w-4 h-4" /> Filters
             </button>
-            <div className="flex">
-              <button onClick={() => exportReport("PDF")} className="flex items-center gap-2 px-3 py-2 bg-primary text-primary-foreground rounded-l-lg text-sm font-semibold border-r border-primary-foreground/20">
+            <div className="flex shadow-sm">
+              <button onClick={() => exportReport("PDF")} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-l-lg text-sm font-bold border-r border-primary-foreground/20 hover:opacity-90">
                 <FileText className="w-4 h-4" /> PDF
               </button>
-              <button onClick={() => exportReport("Excel")} className="flex items-center gap-2 px-3 py-2 bg-primary text-primary-foreground rounded-r-lg text-sm font-semibold">
+              <button onClick={() => exportReport("Excel")} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-r-lg text-sm font-bold hover:opacity-90">
                 <FileSpreadsheet className="w-4 h-4" /> Excel
               </button>
             </div>
@@ -71,84 +91,99 @@ const Analytics = () => {
         {/* KPIs */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { label: "Total Shipments", value: "294", sub: "+12% vs prior" },
-            { label: "On-Time Delivery", value: "94.8%", sub: "+2.3 pts" },
-            { label: "Avg Transit Days", value: "18.2", sub: "−1.4 days" },
-            { label: "Trade Volume", value: "$8.4M", sub: "+22% YoY" },
+            { label: "Total Shipments", value: summary?.shipments?.total || 0, icon: Ship, color: "text-blue-600", bg: "bg-blue-50" },
+            { label: "On-Time Delivery", value: `${summary?.customs?.compliance || 94}%`, icon: Clock, color: "text-emerald-600", bg: "bg-emerald-50" },
+            { label: "Active Orders", value: summary?.orders?.active || 0, icon: TrendingUp, color: "text-violet-600", bg: "bg-violet-50" },
+            { label: "Trade Volume", value: `$${((summary?.finance?.revenue || 0) / 1000000).toFixed(1)}M`, icon: DollarSign, color: "text-amber-600", bg: "bg-amber-50" },
           ].map(k => (
-            <div key={k.label} className="bg-white rounded-xl border border-border p-5">
-              <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">{k.label}</p>
-              <p className="text-2xl font-bold font-headline mt-2">{k.value}</p>
-              <p className="text-xs text-emerald-600 font-semibold mt-1">{k.sub}</p>
+            <div key={k.label} className={`${k.bg} rounded-2xl border border-border/50 p-5 shadow-sm`}>
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-black">{k.label}</p>
+                <k.icon className={`w-4 h-4 ${k.color} opacity-40`} />
+              </div>
+              <p className={`text-2xl font-bold font-headline ${k.color}`}>{k.value}</p>
+              <p className="text-[10px] text-emerald-600 font-bold mt-1 flex items-center gap-1">
+                <TrendingUp className="w-3 h-3" /> +12% from last period
+              </p>
             </div>
           ))}
         </div>
 
-        {/* Shipment Volume + On-Time */}
+        {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-white rounded-xl border border-border p-6">
-            <div className="flex items-center justify-between mb-4">
+          <div className="lg:col-span-2 bg-white rounded-2xl border border-border p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="font-bold font-headline">Shipment Volume</h2>
-                <p className="text-xs text-muted-foreground">Imports vs Exports</p>
+                <h2 className="font-bold font-headline text-lg">Shipment Volume</h2>
+                <p className="text-xs text-muted-foreground font-medium">Imports vs Exports Trend</p>
               </div>
             </div>
-            <ResponsiveContainer width="100%" height={280}>
+            <ResponsiveContainer width="100%" height={300}>
               <BarChart data={shipmentVolume}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(214, 32%, 91%)" />
-                <XAxis dataKey="month" stroke="hsl(220, 14%, 64%)" fontSize={12} />
-                <YAxis stroke="hsl(220, 14%, 64%)" fontSize={12} />
-                <Tooltip />
-                <Legend wrapperStyle={{ fontSize: 12 }} />
-                <Bar dataKey="imports" fill="hsl(217, 91%, 60%)" radius={[6, 6, 0, 0]} />
-                <Bar dataKey="exports" fill="hsl(173, 80%, 40%)" radius={[6, 6, 0, 0]} />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(214, 32%, 91%)" vertical={false} />
+                <XAxis dataKey="month" stroke="hsl(220, 14%, 64%)" fontSize={10} fontWeight={700} axisLine={false} tickLine={false} dy={10} />
+                <YAxis stroke="hsl(220, 14%, 64%)" fontSize={10} fontWeight={700} axisLine={false} tickLine={false} />
+                <Tooltip 
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                  cursor={{ fill: 'hsl(210, 40%, 98%)' }}
+                />
+                <Legend wrapperStyle={{ fontSize: 10, fontWeight: 700, paddingTop: 20 }} />
+                <Bar dataKey="imports" fill="hsl(217, 91%, 60%)" radius={[4, 4, 0, 0]} barSize={24} />
+                <Bar dataKey="exports" fill="hsl(173, 80%, 40%)" radius={[4, 4, 0, 0]} barSize={24} />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
-          <div className="bg-white rounded-xl border border-border p-6">
-            <h2 className="font-bold font-headline mb-1">On-Time Delivery Rate</h2>
-            <p className="text-xs text-muted-foreground mb-4">Performance trend (%)</p>
-            <ResponsiveContainer width="100%" height={240}>
+          <div className="bg-white rounded-2xl border border-border p-6 shadow-sm">
+            <h2 className="font-bold font-headline text-lg mb-1">On-Time Performance</h2>
+            <p className="text-xs text-muted-foreground font-medium mb-6">Global supply chain reliability</p>
+            <ResponsiveContainer width="100%" height={260}>
               <LineChart data={onTimeData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(214, 32%, 91%)" />
-                <XAxis dataKey="month" stroke="hsl(220, 14%, 64%)" fontSize={12} />
-                <YAxis stroke="hsl(220, 14%, 64%)" fontSize={12} domain={[80, 100]} />
-                <Tooltip formatter={(v: number) => `${v}%`} />
-                <Line type="monotone" dataKey="rate" stroke="hsl(160, 84%, 39%)" strokeWidth={3} dot={{ r: 5, fill: "hsl(160, 84%, 39%)" }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(214, 32%, 91%)" vertical={false} />
+                <XAxis dataKey="month" stroke="hsl(220, 14%, 64%)" fontSize={10} fontWeight={700} axisLine={false} tickLine={false} dy={10} />
+                <YAxis stroke="hsl(220, 14%, 64%)" fontSize={10} fontWeight={700} axisLine={false} tickLine={false} domain={[80, 100]} />
+                <Tooltip 
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                  formatter={(v: number) => [`${v}%`, 'On-Time']}
+                />
+                <Line type="monotone" dataKey="rate" stroke="hsl(160, 84%, 39%)" strokeWidth={4} dot={{ r: 6, fill: "hsl(160, 84%, 39%)", strokeWidth: 3, stroke: "#fff" }} activeDot={{ r: 8 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Top Routes + Categories */}
+        {/* Categories + Table */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-white rounded-xl border border-border">
-            <div className="p-5 border-b border-border">
-              <h2 className="font-bold font-headline">Top Trade Routes</h2>
-              <p className="text-xs text-muted-foreground">Ranked by shipment volume</p>
+          <div className="lg:col-span-2 bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
+            <div className="p-5 border-b border-border flex items-center justify-between bg-muted/10">
+              <h2 className="font-bold font-headline text-sm uppercase tracking-widest text-muted-foreground">Top Trade Routes</h2>
+              <TrendingUp className="w-4 h-4 text-primary" />
             </div>
             <table className="w-full text-sm">
-              <thead className="text-xs text-muted-foreground uppercase tracking-wider">
-                <tr className="border-b border-border">
-                  <th className="px-5 py-3 text-left font-semibold">Route</th>
-                  <th className="px-5 py-3 text-right font-semibold">Shipments</th>
-                  <th className="px-5 py-3 text-right font-semibold">Trade Value</th>
-                  <th className="px-5 py-3 text-left font-semibold">Volume Share</th>
+              <thead className="text-[10px] text-muted-foreground uppercase tracking-widest font-black bg-muted/5">
+                <tr>
+                  <th className="px-6 py-4 text-left">Route</th>
+                  <th className="px-6 py-4 text-right">Shipments</th>
+                  <th className="px-6 py-4 text-right">Trade Value</th>
+                  <th className="px-6 py-4 text-left">Volume Share</th>
                 </tr>
               </thead>
-              <tbody>
-                {topRoutes.map(r => {
-                  const max = Math.max(...topRoutes.map(x => x.volume));
-                  const pct = (r.volume / max) * 100;
+              <tbody className="divide-y divide-border/50">
+                {[
+                  { route: "Shanghai → Karachi", volume: 142, value: "$2.4M" },
+                  { route: "Hamburg → Karachi", volume: 86, value: "$1.8M" },
+                  { route: "Karachi → Dubai", volume: 124, value: "$1.6M" },
+                  { route: "Karachi → Jeddah", volume: 78, value: "$980K" },
+                ].map(r => {
+                  const pct = (r.volume / 142) * 100;
                   return (
-                    <tr key={r.route} className="border-b border-border last:border-0">
-                      <td className="px-5 py-3 font-medium">{r.route}</td>
-                      <td className="px-5 py-3 text-right font-mono">{r.volume}</td>
-                      <td className="px-5 py-3 text-right font-mono font-semibold">{r.value}</td>
-                      <td className="px-5 py-3">
-                        <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-                          <div className="h-full bg-primary rounded-full" style={{ width: `${pct}%` }} />
+                    <tr key={r.route} className="hover:bg-muted/10 transition-colors">
+                      <td className="px-6 py-4 font-bold text-foreground">{r.route}</td>
+                      <td className="px-6 py-4 text-right font-mono font-bold">{r.volume}</td>
+                      <td className="px-6 py-4 text-right font-mono font-black text-primary">{r.value}</td>
+                      <td className="px-6 py-4">
+                        <div className="w-32 h-2 bg-muted rounded-full overflow-hidden shadow-inner">
+                          <div className="h-full bg-gradient-to-r from-primary to-blue-400 rounded-full" style={{ width: `${pct}%` }} />
                         </div>
                       </td>
                     </tr>
@@ -158,58 +193,27 @@ const Analytics = () => {
             </table>
           </div>
 
-          <div className="bg-white rounded-xl border border-border p-6">
-            <h2 className="font-bold font-headline mb-1">Product Categories</h2>
-            <p className="text-xs text-muted-foreground mb-4">By trade volume</p>
-            <ResponsiveContainer width="100%" height={200}>
+          <div className="bg-white rounded-2xl border border-border p-6 shadow-sm">
+            <h2 className="font-bold font-headline text-sm uppercase tracking-widest text-muted-foreground mb-6">Product Categories</h2>
+            <ResponsiveContainer width="100%" height={220}>
               <PieChart>
-                <Pie data={productCategories} dataKey="value" outerRadius={80}>
-                  {productCategories.map((e, i) => <Cell key={i} fill={e.color} />)}
+                <Pie data={productCategories} dataKey="value" outerRadius={90} innerRadius={60} paddingAngle={5}>
+                  {productCategories.map((e, i) => <Cell key={i} fill={e.color} stroke="none" />)}
                 </Pie>
-                <Tooltip formatter={(v: number) => `${v}%`} />
+                <Tooltip 
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                  formatter={(v: number) => `${v}%`}
+                />
               </PieChart>
             </ResponsiveContainer>
-            <div className="space-y-2 mt-2">
+            <div className="space-y-3 mt-6">
               {productCategories.map(e => (
-                <div key={e.name} className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-sm" style={{ background: e.color }} /><span>{e.name}</span></div>
-                  <span className="font-semibold">{e.value}%</span>
+                <div key={e.name} className="flex items-center justify-between text-[11px] font-bold">
+                  <div className="flex items-center gap-3"><div className="w-3 h-3 rounded-full" style={{ background: e.color }} /> <span className="text-muted-foreground uppercase">{e.name}</span></div>
+                  <span className="text-foreground">{e.value}%</span>
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-
-        {/* Saved Reports */}
-        <div className="bg-white rounded-xl border border-border p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="font-bold font-headline">Saved Reports</h2>
-              <p className="text-xs text-muted-foreground">Scheduled and ad-hoc reports</p>
-            </div>
-            <button className="text-sm text-primary font-semibold hover:underline">+ New Report</button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {[
-              { name: "Monthly Trade Summary", schedule: "1st of month", last: "Apr 1" },
-              { name: "Top 10 Suppliers", schedule: "Weekly", last: "Apr 28" },
-              { name: "Customs Duty Analysis", schedule: "Monthly", last: "Apr 1" },
-              { name: "Aged Receivables", schedule: "Bi-weekly", last: "Apr 15" },
-              { name: "Vessel Performance", schedule: "Monthly", last: "Apr 1" },
-              { name: "FBR Compliance Audit", schedule: "Quarterly", last: "Apr 1" },
-            ].map(r => (
-              <div key={r.name} className="border border-border rounded-lg p-4 hover:border-primary transition-colors">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="font-semibold text-sm">{r.name}</p>
-                    <p className="text-xs text-muted-foreground mt-1">{r.schedule} · last sent {r.last}</p>
-                  </div>
-                  <button onClick={() => exportReport(r.name)} className="p-1.5 hover:bg-muted rounded text-muted-foreground hover:text-primary">
-                    <Download className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </div>

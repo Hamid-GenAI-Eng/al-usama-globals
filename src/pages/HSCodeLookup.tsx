@@ -1,118 +1,143 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
-import { Search, BookOpen, Copy, ExternalLink } from "lucide-react";
+import { Search, Info, ArrowRight, BookOpen, ShieldCheck, HelpCircle, Copy, ExternalLink } from "lucide-react";
+import api from "@/lib/api";
 import { toast } from "sonner";
 
-interface HSEntry {
-  code: string;
-  description: string;
-  category: string;
-  duty: number;
-  salesTax: number;
-  unit: string;
-}
-
-const hsDatabase: HSEntry[] = [
-  { code: "8544.42.10", description: "Insulated electric conductors with connectors, for telecom, ≤80V", category: "Electronics", duty: 11, salesTax: 18, unit: "kg" },
-  { code: "8517.13.00", description: "Smartphones (cellular network)", category: "Electronics", duty: 20, salesTax: 18, unit: "u" },
-  { code: "8518.30.00", description: "Headphones, earphones, earbuds", category: "Electronics", duty: 20, salesTax: 18, unit: "u" },
-  { code: "5208.42.00", description: "Woven cotton fabric, dyed, plain weave, >100g/m²", category: "Textiles", duty: 11, salesTax: 18, unit: "m²" },
-  { code: "6109.10.00", description: "T-shirts, singlets, knitted, of cotton", category: "Textiles", duty: 16, salesTax: 18, unit: "u" },
-  { code: "7308.30.00", description: "Doors, windows and frames, of iron or steel", category: "Steel", duty: 20, salesTax: 18, unit: "kg" },
-  { code: "7210.49.00", description: "Flat-rolled iron/steel, plated/coated with zinc", category: "Steel", duty: 11, salesTax: 18, unit: "kg" },
-  { code: "8407.31.00", description: "Reciprocating piston engines, ≤50cc", category: "Machinery", duty: 16, salesTax: 18, unit: "u" },
-  { code: "8479.89.99", description: "Machines and mechanical appliances, NES", category: "Machinery", duty: 5, salesTax: 18, unit: "u" },
-  { code: "3920.10.00", description: "Plates of polymers of ethylene, non-cellular", category: "Polymers", duty: 16, salesTax: 18, unit: "kg" },
-  { code: "3923.30.00", description: "Carboys, bottles, flasks of plastics", category: "Polymers", duty: 20, salesTax: 18, unit: "kg" },
-  { code: "0902.30.00", description: "Black tea (fermented), in packages ≤3kg", category: "Food", duty: 11, salesTax: 18, unit: "kg" },
-  { code: "1006.30.00", description: "Semi-milled or wholly milled rice", category: "Food", duty: 0, salesTax: 0, unit: "kg" },
-  { code: "9018.31.00", description: "Syringes, with or without needles", category: "Medical", duty: 0, salesTax: 0, unit: "u" },
-];
-
 const HSCodeLookup = () => {
-  const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("all");
-  const categories = ["all", ...Array.from(new Set(hsDatabase.map(h => h.category)))];
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const filtered = hsDatabase.filter(h => {
-    const matchSearch = !search || h.code.includes(search) || h.description.toLowerCase().includes(search.toLowerCase());
-    const matchCat = category === "all" || h.category === category;
-    return matchSearch && matchCat;
-  });
+  const searchCodes = async (q: string) => {
+    setLoading(true);
+    try {
+      const response = await api.get(`/customs/hs-codes?query=${q}`);
+      setResults(response.data.data);
+    } catch (error) {
+      console.error("Search failed:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      searchCodes(query);
+    }, 500);
+    return () => clearTimeout(delayDebounce);
+  }, [query]);
 
   const copyCode = (code: string) => {
     navigator.clipboard.writeText(code);
-    toast.success(`Copied ${code}`);
+    toast.success(`Copied HS Code: ${code}`);
   };
 
   return (
-    <DashboardLayout>
-      <div className="space-y-6 max-w-6xl">
-        <div>
-          <h1 className="text-2xl font-bold font-headline">HS Code Lookup</h1>
-          <p className="text-sm text-muted-foreground mt-1">Search Pakistan Customs Tariff (PCT) Harmonized System codes for import/export classification</p>
-        </div>
-
-        <div className="bg-gradient-to-br from-primary/5 to-blue-50 rounded-xl border border-border p-5 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-            <BookOpen className="w-6 h-6 text-primary" />
-          </div>
-          <div className="flex-1">
-            <p className="font-semibold">PCT 2025-26 Database</p>
-            <p className="text-sm text-muted-foreground">{hsDatabase.length}+ codes searchable. Updated as per FBR SRO notifications.</p>
-          </div>
-          <a href="https://www.fbr.gov.pk/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
-            FBR Portal <ExternalLink className="w-3 h-3" />
-          </a>
-        </div>
-
-        <div className="bg-white rounded-xl border border-border">
-          <div className="p-4 border-b border-border flex flex-wrap gap-3">
-            <div className="relative flex-1 min-w-[280px]">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <input
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                placeholder="Search by HS code (e.g. 8544) or description..."
-                className="w-full pl-9 pr-4 py-2 bg-muted rounded-lg text-sm border-none outline-none focus:ring-2 focus:ring-primary/20"
+    <DashboardLayout title="HS Code Navigator">
+      <div className="space-y-6">
+        <div className="bg-gradient-to-r from-primary to-blue-700 rounded-2xl p-8 text-white shadow-xl relative overflow-hidden">
+          <div className="relative z-10 max-w-2xl">
+            <h1 className="text-3xl font-bold font-headline mb-3 text-white">Global Trade Tariff Search</h1>
+            <p className="text-blue-100 mb-6">Find the correct HS Code for your products to ensure accurate duty calculations and compliance with FBR and Customs regulations.</p>
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-300" />
+              <input 
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                placeholder="Search by code (e.g. 8471) or product name..." 
+                className="w-full pl-12 pr-4 py-4 rounded-xl border-none bg-white/10 backdrop-blur-md text-white placeholder:text-blue-200 outline-none ring-2 ring-white/20 focus:ring-white/40 transition-all text-lg shadow-inner"
               />
             </div>
-            <select value={category} onChange={e => setCategory(e.target.value)} className="px-3 py-2 border border-border rounded-lg text-sm bg-white">
-              {categories.map(c => <option key={c} value={c}>{c === "all" ? "All Categories" : c}</option>)}
-            </select>
+          </div>
+          <BookOpen className="absolute right-[-20px] bottom-[-20px] w-64 h-64 text-white opacity-5 rotate-12" />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <div className="lg:col-span-3 space-y-4">
+            <div className="flex items-center justify-between px-2">
+              <h2 className="font-bold text-foreground">Search Results {results.length > 0 && <span className="text-muted-foreground font-normal ml-2">({results.length})</span>}</h2>
+              {loading && <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />}
+            </div>
+
+            {results.length === 0 && !loading ? (
+              <div className="bg-white rounded-xl border border-border p-12 text-center shadow-sm">
+                <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Search className="w-8 h-8 text-muted-foreground opacity-30" />
+                </div>
+                <h3 className="text-lg font-bold">Start your search</h3>
+                <p className="text-muted-foreground mt-1">Enter a product name or partial HS code above to see tariff details.</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {results.map((r, i) => (
+                  <div key={i} className="bg-white rounded-xl border border-border p-5 hover:border-primary/40 transition-all cursor-pointer group shadow-sm">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <span className="px-3 py-1 bg-primary/10 text-primary font-mono font-bold rounded-md text-sm">{r.code}</span>
+                          <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold flex items-center gap-1">
+                            <ShieldCheck className="w-3 h-3" /> FBR Verified
+                          </span>
+                        </div>
+                        <h3 className="font-bold text-foreground mb-2 group-hover:text-primary transition-colors">{r.description}</h3>
+                        <div className="grid grid-cols-3 gap-4">
+                          <div className="bg-muted/30 p-2.5 rounded-lg border border-border/50">
+                            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Customs Duty</p>
+                            <p className="font-bold text-foreground mt-1">{r.duty}</p>
+                          </div>
+                          <div className="bg-muted/30 p-2.5 rounded-lg border border-border/50">
+                            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Sales Tax</p>
+                            <p className="font-bold text-foreground mt-1">{r.salesTax}</p>
+                          </div>
+                          <div className="bg-muted/30 p-2.5 rounded-lg border border-border/50">
+                            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Income Tax</p>
+                            <p className="font-bold text-foreground mt-1">{r.incomeTax}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-2 ml-4">
+                        <button onClick={(e) => { e.stopPropagation(); copyCode(r.code); }} className="p-2 hover:bg-muted rounded-lg text-muted-foreground hover:text-primary transition-all">
+                          <Copy className="w-5 h-5" />
+                        </button>
+                        <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:translate-x-1 group-hover:text-primary transition-all p-1" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
-          <table className="w-full text-sm">
-            <thead className="bg-muted/40 text-xs text-muted-foreground uppercase tracking-wider">
-              <tr>
-                <th className="px-4 py-3 text-left font-semibold">HS Code</th>
-                <th className="px-4 py-3 text-left font-semibold">Description</th>
-                <th className="px-4 py-3 text-left font-semibold">Category</th>
-                <th className="px-4 py-3 text-right font-semibold">Customs Duty</th>
-                <th className="px-4 py-3 text-right font-semibold">Sales Tax</th>
-                <th className="px-4 py-3 text-left font-semibold">Unit</th>
-                <th className="w-10"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map(h => (
-                <tr key={h.code} className="border-t border-border hover:bg-muted/30">
-                  <td className="px-4 py-3 font-mono font-semibold text-primary">{h.code}</td>
-                  <td className="px-4 py-3">{h.description}</td>
-                  <td className="px-4 py-3"><span className="px-2 py-0.5 rounded-full text-xs bg-muted">{h.category}</span></td>
-                  <td className="px-4 py-3 text-right font-mono font-semibold">{h.duty}%</td>
-                  <td className="px-4 py-3 text-right font-mono">{h.salesTax}%</td>
-                  <td className="px-4 py-3 text-muted-foreground">{h.unit}</td>
-                  <td className="px-2 py-3">
-                    <button onClick={() => copyCode(h.code)} className="p-1 text-muted-foreground hover:text-primary"><Copy className="w-4 h-4" /></button>
-                  </td>
-                </tr>
-              ))}
-              {filtered.length === 0 && (
-                <tr><td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">No HS codes match your search.</td></tr>
-              )}
-            </tbody>
-          </table>
+          <div className="space-y-6">
+            <div className="bg-blue-50 border border-blue-100 rounded-xl p-5 shadow-sm">
+              <div className="flex items-center gap-2 mb-3 text-blue-700">
+                <Info className="w-4 h-4" />
+                <h3 className="font-bold text-sm">Need Help?</h3>
+              </div>
+              <p className="text-xs text-blue-600/80 leading-relaxed font-medium">HS Codes are critical for international trade. If you're unsure about a classification, consult with our compliance team.</p>
+              <button className="w-full mt-4 py-2 bg-white text-blue-700 rounded-lg text-xs font-bold shadow-sm border border-blue-200">Contact Expert</button>
+            </div>
+
+            <div className="bg-white border border-border rounded-xl p-5 shadow-sm">
+              <h3 className="font-bold text-sm mb-4">Compliance Resources</h3>
+              <div className="space-y-3">
+                {[
+                  { label: "FBR Import Policy 2026", icon: BookOpen },
+                  { label: "Prohibited Items List", icon: ShieldCheck },
+                  { label: "SRO Search Portal", icon: HelpCircle },
+                ].map(item => (
+                  <button key={item.label} className="w-full flex items-center justify-between p-2.5 hover:bg-muted rounded-lg transition-colors group">
+                    <span className="flex items-center gap-3 text-xs font-bold text-muted-foreground group-hover:text-foreground">
+                      <item.icon className="w-4 h-4" />
+                      {item.label}
+                    </span>
+                    <ArrowRight className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-all" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </DashboardLayout>
