@@ -36,6 +36,13 @@ import FinancialDashboard from "./pages/FinancialDashboard.tsx";
 import Analytics from "./pages/Analytics.tsx";
 import RBACAdmin from "./pages/RBACAdmin.tsx";
 import Notifications from "./pages/Notifications.tsx";
+import Dashboard from "./pages/Dashboard.tsx";
+import Settings from "./pages/Settings.tsx";
+import Support from "./pages/Support.tsx";
+import AuditLog from "./pages/AuditLog.tsx";
+import ExchangeRates from "./pages/ExchangeRates.tsx";
+import Reports from "./pages/Reports.tsx";
+import ClientPortal from "./pages/ClientPortal.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -85,6 +92,13 @@ const App = () => (
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/admin/users" element={<RBACAdmin />} />
           <Route path="/notifications" element={<Notifications />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/support" element={<Support />} />
+          <Route path="/admin/audit-log" element={<AuditLog />} />
+          <Route path="/finance/exchange-rates" element={<ExchangeRates />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/client/portal" element={<ClientPortal />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -1,12 +1,26 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Globe } from "lucide-react";
+import { toast } from "sonner";
 import loginHero from "@/assets/login-hero.jpg";
 import AuthFooter from "@/components/AuthFooter";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [keepLoggedIn, setKeepLoggedIn] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("password1234");
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim() || !password.trim()) {
+      toast.error("Please enter your email and password");
+      return;
+    }
+    toast.success("Welcome back");
+    navigate("/dashboard");
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -56,7 +70,7 @@ const Login = () => {
               </p>
             </div>
 
-            <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-6" onSubmit={onSubmit}>
               <div>
                 <label className="block text-xs font-bold text-foreground uppercase tracking-wider mb-2">
                   Corporate Email Address
@@ -65,6 +79,8 @@ const Login = () => {
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <input
                     type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="name@al-usama.com"
                     className="w-full pl-12 pr-4 py-3 rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
                   />
@@ -84,7 +100,8 @@ const Login = () => {
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <input
                     type={showPassword ? "text" : "password"}
-                    defaultValue="password1234"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="w-full pl-12 pr-12 py-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
                   />
                   <button
