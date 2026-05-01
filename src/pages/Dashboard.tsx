@@ -1,43 +1,56 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Ship, FileText, DollarSign, AlertTriangle, TrendingUp, TrendingDown, ArrowRight, Package, CheckCircle2, Clock, Users, Activity } from "lucide-react";
-import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, BarChart, Bar } from "recharts";
-
-const kpis = [
-  { label: "Active Shipments", value: "47", delta: "+8", trend: "up", icon: Ship, color: "from-blue-500 to-blue-600" },
-  { label: "Pending Documents", value: "12", delta: "-3", trend: "down", icon: FileText, color: "from-violet-500 to-violet-600" },
-  { label: "Revenue (MTD)", value: "PKR 8.4M", delta: "+12.5%", trend: "up", icon: DollarSign, color: "from-emerald-500 to-emerald-600" },
-  { label: "Open Alerts", value: "5", delta: "+2", trend: "up", icon: AlertTriangle, color: "from-amber-500 to-amber-600" },
-];
-
-const volumeData = [
-  { m: "Jan", import: 32, export: 28 }, { m: "Feb", import: 38, export: 31 },
-  { m: "Mar", import: 41, export: 35 }, { m: "Apr", import: 45, export: 38 },
-  { m: "May", import: 52, export: 44 }, { m: "Jun", import: 47, export: 41 },
-];
-
-const recentShipments = [
-  { id: "SHP-2026-1842", route: "Shanghai → Karachi", status: "In Transit", eta: "2 days", color: "bg-blue-100 text-blue-700" },
-  { id: "SHP-2026-1841", route: "Karachi → Hamburg", status: "Customs", eta: "Today", color: "bg-amber-100 text-amber-700" },
-  { id: "SHP-2026-1840", route: "Dubai → Lahore", status: "Delivered", eta: "Done", color: "bg-emerald-100 text-emerald-700" },
-  { id: "SHP-2026-1839", route: "Karachi → Singapore", status: "Pending", eta: "—", color: "bg-slate-100 text-slate-700" },
-];
-
-const tasks = [
-  { label: "Approve GD KAPE-441230", due: "Today", priority: "high" },
-  { label: "Upload BL for SHP-2026-1842", due: "Tomorrow", priority: "med" },
-  { label: "Review PO-2026-0241 line items", due: "Apr 28", priority: "med" },
-  { label: "Pay duty for SHP-2026-1839", due: "Apr 29", priority: "low" },
-];
-
-const activity = [
-  { who: "Bilal Ahmed", what: "uploaded Bill of Lading", target: "SHP-2026-1842", time: "5m ago", icon: FileText },
-  { who: "System", what: "cleared customs for", target: "SHP-2026-1840", time: "1h ago", icon: CheckCircle2 },
-  { who: "Hamza Khan", what: "created Purchase Order", target: "PO-2026-0241", time: "3h ago", icon: Package },
-  { who: "Captain Usama", what: "invited new user", target: "ahmed@al-usama.com", time: "Yesterday", icon: Users },
-];
+import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
+import api from "@/lib/api";
 
 const Dashboard = () => {
+  const [stats, setStats] = useState<any>(null);
+  const [recentShipments, setRecentShipments] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSummary = async () => {
+      try {
+        const response = await api.get("/analytics/summary");
+        setStats(response.data.data.stats);
+        setRecentShipments(response.data.data.recentShipments);
+      } catch (error) {
+        console.error("Failed to fetch analytics:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSummary();
+  }, []);
+
+  const kpis = [
+    { label: "Active Shipments", value: stats?.activeShipments || "0", delta: "+8", trend: "up", icon: Ship, color: "from-blue-500 to-blue-600" },
+    { label: "Total Orders", value: stats?.totalOrders || "0", delta: "-3", trend: "down", icon: FileText, color: "from-violet-500 to-violet-600" },
+    { label: "Revenue (MTD)", value: `PKR ${(stats?.totalRevenue / 1000000 || 0).toFixed(1)}M`, delta: "+12.5%", trend: "up", icon: DollarSign, color: "from-emerald-500 to-emerald-600" },
+    { label: "Total Shipments", value: stats?.totalShipments || "0", delta: "+2", trend: "up", icon: AlertTriangle, color: "from-amber-500 to-amber-600" },
+  ];
+
+  const volumeData = [
+    { m: "Jan", import: 32, export: 28 }, { m: "Feb", import: 38, export: 31 },
+    { m: "Mar", import: 41, export: 35 }, { m: "Apr", import: 45, export: 38 },
+    { m: "May", import: 52, export: 44 }, { m: "Jun", import: 47, export: 41 },
+  ];
+
+  const tasks = [
+    { label: "Approve GD KAPE-441230", due: "Today", priority: "high" },
+    { label: "Upload BL for SHP-2026-1842", due: "Tomorrow", priority: "med" },
+    { label: "Review PO-2026-0241 line items", due: "Apr 28", priority: "med" },
+    { label: "Pay duty for SHP-2026-1839", due: "Apr 29", priority: "low" },
+  ];
+
+  const activity = [
+    { who: "Bilal Ahmed", what: "uploaded Bill of Lading", target: "SHP-2026-1842", time: "5m ago", icon: FileText },
+    { who: "System", what: "cleared customs for", target: "SHP-2026-1840", time: "1h ago", icon: CheckCircle2 },
+    { who: "Hamza Khan", what: "created Purchase Order", target: "PO-2026-0241", time: "3h ago", icon: Package },
+    { who: "Captain Usama", what: "invited new user", target: "ahmed@al-usama.com", time: "Yesterday", icon: Users },
+  ];
   return (
     <DashboardLayout title="Dashboard" showSearch>
       <div className="space-y-6">
@@ -139,11 +152,17 @@ const Dashboard = () => {
                 {recentShipments.map(s => (
                   <tr key={s.id} className="hover:bg-muted/30 transition">
                     <td className="px-6 py-4 font-semibold">
-                      <Link to={`/shipments/${s.id}`} className="text-primary hover:underline">{s.id}</Link>
+                      <Link to={`/shipments/${s.id}`} className="text-primary hover:underline">{s.shipmentId}</Link>
                     </td>
-                    <td className="px-6 py-4">{s.route}</td>
-                    <td className="px-6 py-4"><span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${s.color}`}>{s.status}</span></td>
-                    <td className="px-6 py-4 text-muted-foreground">{s.eta}</td>
+                    <td className="px-6 py-4">{s.origin} → {s.destination}</td>
+                    <td className="px-6 py-4">
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
+                        s.status === 'DELIVERED' ? 'bg-emerald-100 text-emerald-700' : 
+                        s.status === 'IN_TRANSIT' ? 'bg-blue-100 text-blue-700' : 
+                        'bg-amber-100 text-amber-700'
+                      }`}>{s.status}</span>
+                    </td>
+                    <td className="px-6 py-4 text-muted-foreground">{s.arrivalDate ? new Date(s.arrivalDate).toLocaleDateString() : '—'}</td>
                   </tr>
                 ))}
               </tbody>

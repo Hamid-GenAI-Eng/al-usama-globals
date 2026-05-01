@@ -4,6 +4,7 @@ import { Mail, Lock, Eye, EyeOff, ArrowRight, Globe } from "lucide-react";
 import { toast } from "sonner";
 import loginHero from "@/assets/login-hero.jpg";
 import AuthFooter from "@/components/AuthFooter";
+import api from "@/lib/api";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -12,14 +13,27 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("password1234");
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !password.trim()) {
       toast.error("Please enter your email and password");
       return;
     }
-    toast.success("Welcome back");
-    navigate("/dashboard");
+
+    try {
+      const response = await api.post("/auth/login", { email, password });
+      const { token, role } = response.data.data;
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", role);
+
+      toast.success("Welcome back");
+      navigate("/dashboard");
+    } catch (error: any) {
+      console.error(error);
+      const message = error.response?.data?.message || "Login failed. Please check your credentials.";
+      toast.error(message);
+    }
   };
 
   return (
