@@ -1,10 +1,22 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Building2, Lock, ArrowRight, ShieldCheck, BarChart3, Globe, HelpCircle } from "lucide-react";
+import { toast } from "sonner";
 import registerMap from "@/assets/register-map.jpg";
 import AuthFooter from "@/components/AuthFooter";
 
 const Register = () => {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ business: "", admin: "", email: "", password: "" });
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.business.trim() || !form.admin.trim() || !form.email.trim() || form.password.length < 8) {
+      toast.error("Please fill all fields. Password must be at least 8 characters.");
+      return;
+    }
+    toast.success("Account created. Welcome aboard!");
+    navigate("/dashboard");
+  };
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Navbar */}
