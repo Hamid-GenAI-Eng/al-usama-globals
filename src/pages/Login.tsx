@@ -117,7 +117,7 @@ const Login = () => {
             </form>
 
             <div className="text-center space-y-3 pt-2">
-              <p className="text-muted-foreground text-sm">New to Al-Usama Systems?</p>
+              <p className="text-muted-foreground text-sm">New to AL-Usama-Import and Export System?</p>
               <Link
                 to="/register"
                 className="inline-block border border-border rounded-full px-8 py-3 text-sm font-semibold text-foreground hover:bg-muted transition-all"

@@ -79,7 +79,7 @@ const DocumentDetails = () => {
                   <p className="text-[8px] uppercase text-muted-foreground font-bold mb-1">Vendor</p>
                   <p className="text-[10px] font-semibold text-foreground mb-3">Shanghai Heavy Industries Co. Ltd</p>
                   <p className="text-[8px] uppercase text-muted-foreground font-bold mb-1">Buyer</p>
-                  <p className="text-[10px] font-semibold text-foreground mb-3">Al-Usama Global Trading LLC</p>
+                  <p className="text-[10px] font-semibold text-foreground mb-3">AL-Usama-Import and Export System Trading LLC</p>
                   <div className="border-t border-border pt-3 mt-3">
                     <div className="flex justify-between text-[9px] mb-1"><span className="text-muted-foreground">Steel Beams A4</span><span className="font-bold">$124,500</span></div>
                     <div className="flex justify-between text-[9px] mb-3"><span className="text-muted-foreground">Glass Paneling UV</span><span className="font-bold">$89,200</span></div>

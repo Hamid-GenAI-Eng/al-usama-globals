@@ -48,9 +48,9 @@ const DashboardLayout = ({ children, title, showSearch = false, showTabs = false
       {/* Sidebar */}
       <aside className={`fixed md:static z-50 inset-y-0 left-0 w-[220px] bg-white border-r border-border flex flex-col transition-transform duration-200 ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}>
         <div className="flex items-center gap-2.5 px-5 py-5">
-          <img src={logo} alt="Al-Usama Global" className="h-9 w-9 rounded-lg" />
+          <img src={logo} alt="AL-Usama-Import and Export System" className="h-9 w-9 rounded-lg" />
           <div>
-            <p className="text-sm font-bold text-foreground font-headline leading-tight">Al-Usama Global</p>
+            <p className="text-sm font-bold text-foreground font-headline leading-tight">AL-Usama-Import and Export System</p>
             <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground font-semibold">Architectural Ledger</p>
           </div>
         </div>

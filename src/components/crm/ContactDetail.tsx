@@ -60,7 +60,7 @@ const ContactDetail = ({ kind }: Props) => {
             <div>
               <div className="flex items-center gap-3 flex-wrap">
                 <h1 className="text-2xl font-bold font-headline text-foreground">
-                  {isSupplier ? "Shanghai Heavy Industries Co. Ltd" : "Al-Usama Global Trading LLC"}
+                  {isSupplier ? "Shanghai Heavy Industries Co. Ltd" : "AL-Usama-Import and Export System Trading LLC"}
                 </h1>
                 <span className="px-2.5 py-1 rounded-full text-[11px] font-bold uppercase bg-purple-50 text-purple-700 border border-purple-200">PLATINUM</span>
               </div>

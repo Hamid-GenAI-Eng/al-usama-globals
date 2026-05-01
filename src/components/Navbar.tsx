@@ -9,8 +9,8 @@ const Navbar = () => {
     <nav className="fixed top-0 w-full z-50 glass-nav shadow-sm">
       <div className="flex justify-between items-center px-8 py-3 max-w-screen-2xl mx-auto">
         <Link to="/" className="flex items-center gap-3">
-          <img src={logo} alt="Al-Usama Global" className="h-10 w-auto" />
-          <span className="text-xl font-bold tracking-tighter text-foreground font-headline">Al-Usama Global</span>
+          <img src={logo} alt="AL-Usama-Import and Export System" className="h-10 w-auto" />
+          <span className="text-xl font-bold tracking-tighter text-foreground font-headline">AL-Usama-Import and Export System</span>
         </Link>
         <div className="hidden md:flex items-center gap-8">
           {[

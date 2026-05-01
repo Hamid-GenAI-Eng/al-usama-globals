@@ -71,7 +71,7 @@ const Register = () => {
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. Al-Usama Global Lt"
+                    placeholder="e.g. AL-Usama-Import and Export System Lt"
                     className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
                   />
                 </div>
