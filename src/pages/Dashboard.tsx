@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Ship, FileText, DollarSign, AlertTriangle, TrendingUp, TrendingDown, ArrowRight, Package, CheckCircle2, Clock, Users, Activity } from "lucide-react";
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
+import { Skeleton } from "@/components/ui/skeleton";
 import api from "@/lib/api";
 
 const Dashboard = () => {
