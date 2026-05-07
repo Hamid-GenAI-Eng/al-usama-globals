@@ -208,17 +208,29 @@ const Dashboard = () => {
               <h3 className="font-bold font-headline">Recent Activity</h3>
             </div>
             <div className="space-y-4">
-              {activity.map((a, i) => (
-                <div key={i} className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <a.icon className="w-4 h-4 text-primary" />
+              {loading ? (
+                Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="flex gap-3">
+                    <Skeleton className="w-8 h-8 rounded-full shrink-0" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-3 w-full" />
+                      <Skeleton className="h-3 w-16" />
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0 text-sm">
-                    <p><span className="font-semibold">{a.who}</span> <span className="text-muted-foreground">{a.what}</span> <span className="font-semibold">{a.target}</span></p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{a.time}</p>
+                ))
+              ) : (
+                activity.map((a, i) => (
+                  <div key={i} className="flex gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <a.icon className="w-4 h-4 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0 text-sm">
+                      <p><span className="font-semibold">{a.who}</span> <span className="text-muted-foreground">{a.what}</span> <span className="font-semibold">{a.target}</span></p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{a.time}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </div>
