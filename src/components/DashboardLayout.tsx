@@ -148,7 +148,7 @@ const DashboardLayout = ({ children, title, showSearch = false, showTabs = false
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto p-6 bg-[hsl(210,33%,98%)]">
+        <main key={location.pathname} className="flex-1 overflow-y-auto p-6 bg-[hsl(210,33%,98%)] animate-fade-in">
           {children}
         </main>
       </div>
