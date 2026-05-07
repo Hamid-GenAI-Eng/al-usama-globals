@@ -70,21 +70,34 @@ const Dashboard = () => {
 
         {/* KPI grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {kpis.map(k => (
-            <div key={k.label} className="bg-white rounded-xl border border-border p-5 hover:shadow-md transition">
-              <div className="flex items-start justify-between">
-                <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${k.color} flex items-center justify-center`}>
-                  <k.icon className="w-5 h-5 text-white" />
+          {loading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="bg-white rounded-xl border border-border p-5 animate-fade-in">
+                <div className="flex items-start justify-between">
+                  <Skeleton className="w-11 h-11 rounded-xl" />
+                  <Skeleton className="w-10 h-4" />
                 </div>
-                <span className={`flex items-center gap-1 text-xs font-bold ${k.trend === "up" ? "text-emerald-600" : "text-rose-600"}`}>
-                  {k.trend === "up" ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                  {k.delta}
-                </span>
+                <Skeleton className="h-7 w-24 mt-4" />
+                <Skeleton className="h-3 w-20 mt-2" />
               </div>
-              <p className="text-2xl font-bold font-headline mt-4">{k.value}</p>
-              <p className="text-xs text-muted-foreground mt-1">{k.label}</p>
-            </div>
-          ))}
+            ))
+          ) : (
+            kpis.map(k => (
+              <div key={k.label} className="bg-white rounded-xl border border-border p-5 hover:shadow-md transition">
+                <div className="flex items-start justify-between">
+                  <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${k.color} flex items-center justify-center`}>
+                    <k.icon className="w-5 h-5 text-white" />
+                  </div>
+                  <span className={`flex items-center gap-1 text-xs font-bold ${k.trend === "up" ? "text-emerald-600" : "text-rose-600"}`}>
+                    {k.trend === "up" ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                    {k.delta}
+                  </span>
+                </div>
+                <p className="text-2xl font-bold font-headline mt-4">{k.value}</p>
+                <p className="text-xs text-muted-foreground mt-1">{k.label}</p>
+              </div>
+            ))
+          )}
         </div>
 
         {/* Charts row */}
