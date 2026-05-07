@@ -171,22 +171,33 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {recentShipments.map(s => (
-                  <tr key={s.id} className="hover:bg-muted/30 transition">
-                    <td className="px-6 py-4 font-semibold">
-                      <Link to={`/shipments/${s.id}`} className="text-primary hover:underline">{s.shipmentId}</Link>
-                    </td>
-                    <td className="px-6 py-4">{s.origin} → {s.destination}</td>
-                    <td className="px-6 py-4">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
-                        s.status === 'DELIVERED' ? 'bg-emerald-100 text-emerald-700' : 
-                        s.status === 'IN_TRANSIT' ? 'bg-blue-100 text-blue-700' : 
-                        'bg-amber-100 text-amber-700'
-                      }`}>{s.status}</span>
-                    </td>
-                    <td className="px-6 py-4 text-muted-foreground">{s.arrivalDate ? new Date(s.arrivalDate).toLocaleDateString() : '—'}</td>
-                  </tr>
-                ))}
+                {loading ? (
+                  Array.from({ length: 4 }).map((_, i) => (
+                    <tr key={i}>
+                      <td className="px-6 py-4"><Skeleton className="h-4 w-28" /></td>
+                      <td className="px-6 py-4"><Skeleton className="h-4 w-40" /></td>
+                      <td className="px-6 py-4"><Skeleton className="h-5 w-20 rounded-full" /></td>
+                      <td className="px-6 py-4"><Skeleton className="h-4 w-20" /></td>
+                    </tr>
+                  ))
+                ) : (
+                  recentShipments.map(s => (
+                    <tr key={s.id} className="hover:bg-muted/30 transition">
+                      <td className="px-6 py-4 font-semibold">
+                        <Link to={`/shipments/${s.id}`} className="text-primary hover:underline">{s.shipmentId}</Link>
+                      </td>
+                      <td className="px-6 py-4">{s.origin} → {s.destination}</td>
+                      <td className="px-6 py-4">
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
+                          s.status === 'DELIVERED' ? 'bg-emerald-100 text-emerald-700' : 
+                          s.status === 'IN_TRANSIT' ? 'bg-blue-100 text-blue-700' : 
+                          'bg-amber-100 text-amber-700'
+                        }`}>{s.status}</span>
+                      </td>
+                      <td className="px-6 py-4 text-muted-foreground">{s.arrivalDate ? new Date(s.arrivalDate).toLocaleDateString() : '—'}</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
