@@ -19,7 +19,7 @@ const TestimonialsSection = () => (
         </div>
         <div className="grid grid-cols-2 gap-6">
           <div className="bg-surface-container-low p-8 rounded-xl">
-            <p className="text-sm text-muted-foreground italic mb-6">"Automated documentation saved our team 40+ hours a week in manual entry."</p>
+            <p className="text-sm text-muted-foreground mb-6">"Automated documentation saved our team 40+ hours a week in manual entry."</p>
             <p className="font-bold text-sm text-foreground">Elena Petrova</p>
             <p className="text-xs text-muted-foreground">Global Ops Lead</p>
           </div>
