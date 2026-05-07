@@ -24,7 +24,7 @@ const TestimonialsSection = () => (
             <p className="text-xs text-muted-foreground">Global Ops Lead</p>
           </div>
           <div className="bg-surface-container-low p-8 rounded-xl mt-12">
-            <p className="text-sm text-muted-foreground italic mb-6">"The tracking accuracy is unmatched in the mid-market SaaS space."</p>
+            <p className="text-sm text-muted-foreground mb-6">"The tracking accuracy is unmatched in the mid-market SaaS space."</p>
             <p className="font-bold text-sm text-foreground">James Wilson</p>
             <p className="text-xs text-muted-foreground">Managing Partner</p>
           </div>
