@@ -60,14 +60,15 @@ const DashboardLayout = ({ children, title, showSearch = false, showTabs = false
         </div>
 
         <nav className="flex-1 px-3 py-2 space-y-0.5">
-          {navItems.map((item) => (
+          {navItems.map((item, idx) => (
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+              style={{ animationDelay: `${idx * 25}ms`, animationFillMode: "backwards" }}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 animate-slide-in-left ${
                 isActive(item.path)
                   ? "bg-primary/8 text-primary border-r-[3px] border-primary"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground hover:translate-x-0.5"
               }`}
             >
               <item.icon className="w-[18px] h-[18px]" />
@@ -147,7 +148,7 @@ const DashboardLayout = ({ children, title, showSearch = false, showTabs = false
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto p-6 bg-[hsl(210,33%,98%)]">
+        <main key={location.pathname} className="flex-1 overflow-y-auto p-6 bg-[hsl(210,33%,98%)] animate-fade-in">
           {children}
         </main>
       </div>

@@ -13,7 +13,7 @@ const BentoGrid = () => (
       </div>
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* Real-Time Tracking */}
-        <div className="md:col-span-8 bg-card p-10 rounded-xl shadow-sm border border-outline-variant/10 flex flex-col justify-between">
+        <div className="md:col-span-8 bg-card p-10 rounded-xl shadow-sm border border-outline-variant/10 flex flex-col justify-between card-interactive">
           <div>
             <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-6 text-2xl">📊</div>
             <h3 className="text-2xl font-headline font-bold mb-3 text-foreground">Real-Time Shipment Tracking</h3>
@@ -25,7 +25,7 @@ const BentoGrid = () => (
         </div>
 
         {/* Automated Documentation */}
-        <div className="md:col-span-4 gradient-primary text-primary-foreground p-10 rounded-xl flex flex-col justify-between">
+        <div className="md:col-span-4 gradient-primary text-primary-foreground p-10 rounded-xl flex flex-col justify-between hover-lift">
           <div>
             <div className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center mb-6 text-2xl">📄</div>
             <h3 className="text-2xl font-headline font-bold mb-3">Automated Documentation</h3>
@@ -40,7 +40,7 @@ const BentoGrid = () => (
         </div>
 
         {/* Global Network */}
-        <div className="md:col-span-4 bg-surface-container-low p-10 rounded-xl">
+        <div className="md:col-span-4 bg-surface-container-low p-10 rounded-xl card-interactive">
           <div className="w-12 h-12 rounded-lg bg-tertiary/10 flex items-center justify-center text-tertiary mb-6 text-2xl">🌐</div>
           <h3 className="text-xl font-headline font-bold mb-3 text-foreground">Global Network</h3>
           <p className="text-muted-foreground text-sm leading-relaxed">
@@ -49,7 +49,7 @@ const BentoGrid = () => (
         </div>
 
         {/* Advanced Analytics */}
-        <div className="md:col-span-8 bg-card p-10 rounded-xl shadow-sm border border-outline-variant/10 flex flex-col md:flex-row gap-8 items-center">
+        <div className="md:col-span-8 bg-card p-10 rounded-xl shadow-sm border border-outline-variant/10 flex flex-col md:flex-row gap-8 items-center card-interactive">
           <div className="flex-1">
             <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-6 text-2xl">📈</div>
             <h3 className="text-xl font-headline font-bold mb-3 text-foreground">Advanced Data Analytics</h3>
