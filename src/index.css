@@ -82,8 +82,14 @@
   * {
     @apply border-border;
   }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     @apply bg-background text-foreground font-body;
+  }
+  a, button {
+    @apply transition-colors duration-200;
   }
 }
 
