@@ -113,20 +113,28 @@ const Dashboard = () => {
                 <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Exports</span>
               </div>
             </div>
-            <ResponsiveContainer width="100%" height={240}>
-              <AreaChart data={volumeData}>
-                <defs>
-                  <linearGradient id="impG" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="#3b82f6" stopOpacity={0.4} /><stop offset="100%" stopColor="#3b82f6" stopOpacity={0} /></linearGradient>
-                  <linearGradient id="expG" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="#10b981" stopOpacity={0.4} /><stop offset="100%" stopColor="#10b981" stopOpacity={0} /></linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="m" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip />
-                <Area type="monotone" dataKey="import" stroke="#3b82f6" fill="url(#impG)" strokeWidth={2} />
-                <Area type="monotone" dataKey="export" stroke="#10b981" fill="url(#expG)" strokeWidth={2} />
-              </AreaChart>
-            </ResponsiveContainer>
+            {loading ? (
+              <div className="h-[240px] flex items-end gap-2 pt-4">
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <Skeleton key={i} className="flex-1" style={{ height: `${40 + ((i * 13) % 50)}%` }} />
+                ))}
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height={240}>
+                <AreaChart data={volumeData}>
+                  <defs>
+                    <linearGradient id="impG" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="#3b82f6" stopOpacity={0.4} /><stop offset="100%" stopColor="#3b82f6" stopOpacity={0} /></linearGradient>
+                    <linearGradient id="expG" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="#10b981" stopOpacity={0.4} /><stop offset="100%" stopColor="#10b981" stopOpacity={0} /></linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                  <XAxis dataKey="m" tick={{ fontSize: 12 }} />
+                  <YAxis tick={{ fontSize: 12 }} />
+                  <Tooltip />
+                  <Area type="monotone" dataKey="import" stroke="#3b82f6" fill="url(#impG)" strokeWidth={2} />
+                  <Area type="monotone" dataKey="export" stroke="#10b981" fill="url(#expG)" strokeWidth={2} />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
           </div>
 
           <div className="bg-white rounded-xl border border-border p-6">
