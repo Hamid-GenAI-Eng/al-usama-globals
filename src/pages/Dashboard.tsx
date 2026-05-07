@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Ship, FileText, DollarSign, AlertTriangle, TrendingUp, TrendingDown, ArrowRight, Package, CheckCircle2, Clock, Users, Activity } from "lucide-react";
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
+import { Skeleton } from "@/components/ui/skeleton";
 import api from "@/lib/api";
 
 const Dashboard = () => {
@@ -69,21 +70,34 @@ const Dashboard = () => {
 
         {/* KPI grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {kpis.map(k => (
-            <div key={k.label} className="bg-white rounded-xl border border-border p-5 hover:shadow-md transition">
-              <div className="flex items-start justify-between">
-                <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${k.color} flex items-center justify-center`}>
-                  <k.icon className="w-5 h-5 text-white" />
+          {loading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="bg-white rounded-xl border border-border p-5 animate-fade-in">
+                <div className="flex items-start justify-between">
+                  <Skeleton className="w-11 h-11 rounded-xl" />
+                  <Skeleton className="w-10 h-4" />
                 </div>
-                <span className={`flex items-center gap-1 text-xs font-bold ${k.trend === "up" ? "text-emerald-600" : "text-rose-600"}`}>
-                  {k.trend === "up" ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                  {k.delta}
-                </span>
+                <Skeleton className="h-7 w-24 mt-4" />
+                <Skeleton className="h-3 w-20 mt-2" />
               </div>
-              <p className="text-2xl font-bold font-headline mt-4">{k.value}</p>
-              <p className="text-xs text-muted-foreground mt-1">{k.label}</p>
-            </div>
-          ))}
+            ))
+          ) : (
+            kpis.map(k => (
+              <div key={k.label} className="bg-white rounded-xl border border-border p-5 hover:shadow-md transition">
+                <div className="flex items-start justify-between">
+                  <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${k.color} flex items-center justify-center`}>
+                    <k.icon className="w-5 h-5 text-white" />
+                  </div>
+                  <span className={`flex items-center gap-1 text-xs font-bold ${k.trend === "up" ? "text-emerald-600" : "text-rose-600"}`}>
+                    {k.trend === "up" ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                    {k.delta}
+                  </span>
+                </div>
+                <p className="text-2xl font-bold font-headline mt-4">{k.value}</p>
+                <p className="text-xs text-muted-foreground mt-1">{k.label}</p>
+              </div>
+            ))
+          )}
         </div>
 
         {/* Charts row */}
@@ -99,20 +113,28 @@ const Dashboard = () => {
                 <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Exports</span>
               </div>
             </div>
-            <ResponsiveContainer width="100%" height={240}>
-              <AreaChart data={volumeData}>
-                <defs>
-                  <linearGradient id="impG" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="#3b82f6" stopOpacity={0.4} /><stop offset="100%" stopColor="#3b82f6" stopOpacity={0} /></linearGradient>
-                  <linearGradient id="expG" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="#10b981" stopOpacity={0.4} /><stop offset="100%" stopColor="#10b981" stopOpacity={0} /></linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="m" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip />
-                <Area type="monotone" dataKey="import" stroke="#3b82f6" fill="url(#impG)" strokeWidth={2} />
-                <Area type="monotone" dataKey="export" stroke="#10b981" fill="url(#expG)" strokeWidth={2} />
-              </AreaChart>
-            </ResponsiveContainer>
+            {loading ? (
+              <div className="h-[240px] flex items-end gap-2 pt-4">
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <Skeleton key={i} className="flex-1" style={{ height: `${40 + ((i * 13) % 50)}%` }} />
+                ))}
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height={240}>
+                <AreaChart data={volumeData}>
+                  <defs>
+                    <linearGradient id="impG" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="#3b82f6" stopOpacity={0.4} /><stop offset="100%" stopColor="#3b82f6" stopOpacity={0} /></linearGradient>
+                    <linearGradient id="expG" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="#10b981" stopOpacity={0.4} /><stop offset="100%" stopColor="#10b981" stopOpacity={0} /></linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                  <XAxis dataKey="m" tick={{ fontSize: 12 }} />
+                  <YAxis tick={{ fontSize: 12 }} />
+                  <Tooltip />
+                  <Area type="monotone" dataKey="import" stroke="#3b82f6" fill="url(#impG)" strokeWidth={2} />
+                  <Area type="monotone" dataKey="export" stroke="#10b981" fill="url(#expG)" strokeWidth={2} />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
           </div>
 
           <div className="bg-white rounded-xl border border-border p-6">
@@ -149,22 +171,33 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {recentShipments.map(s => (
-                  <tr key={s.id} className="hover:bg-muted/30 transition">
-                    <td className="px-6 py-4 font-semibold">
-                      <Link to={`/shipments/${s.id}`} className="text-primary hover:underline">{s.shipmentId}</Link>
-                    </td>
-                    <td className="px-6 py-4">{s.origin} → {s.destination}</td>
-                    <td className="px-6 py-4">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
-                        s.status === 'DELIVERED' ? 'bg-emerald-100 text-emerald-700' : 
-                        s.status === 'IN_TRANSIT' ? 'bg-blue-100 text-blue-700' : 
-                        'bg-amber-100 text-amber-700'
-                      }`}>{s.status}</span>
-                    </td>
-                    <td className="px-6 py-4 text-muted-foreground">{s.arrivalDate ? new Date(s.arrivalDate).toLocaleDateString() : '—'}</td>
-                  </tr>
-                ))}
+                {loading ? (
+                  Array.from({ length: 4 }).map((_, i) => (
+                    <tr key={i}>
+                      <td className="px-6 py-4"><Skeleton className="h-4 w-28" /></td>
+                      <td className="px-6 py-4"><Skeleton className="h-4 w-40" /></td>
+                      <td className="px-6 py-4"><Skeleton className="h-5 w-20 rounded-full" /></td>
+                      <td className="px-6 py-4"><Skeleton className="h-4 w-20" /></td>
+                    </tr>
+                  ))
+                ) : (
+                  recentShipments.map(s => (
+                    <tr key={s.id} className="hover:bg-muted/30 transition">
+                      <td className="px-6 py-4 font-semibold">
+                        <Link to={`/shipments/${s.id}`} className="text-primary hover:underline">{s.shipmentId}</Link>
+                      </td>
+                      <td className="px-6 py-4">{s.origin} → {s.destination}</td>
+                      <td className="px-6 py-4">
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
+                          s.status === 'DELIVERED' ? 'bg-emerald-100 text-emerald-700' : 
+                          s.status === 'IN_TRANSIT' ? 'bg-blue-100 text-blue-700' : 
+                          'bg-amber-100 text-amber-700'
+                        }`}>{s.status}</span>
+                      </td>
+                      <td className="px-6 py-4 text-muted-foreground">{s.arrivalDate ? new Date(s.arrivalDate).toLocaleDateString() : '—'}</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
@@ -175,17 +208,29 @@ const Dashboard = () => {
               <h3 className="font-bold font-headline">Recent Activity</h3>
             </div>
             <div className="space-y-4">
-              {activity.map((a, i) => (
-                <div key={i} className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <a.icon className="w-4 h-4 text-primary" />
+              {loading ? (
+                Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="flex gap-3">
+                    <Skeleton className="w-8 h-8 rounded-full shrink-0" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-3 w-full" />
+                      <Skeleton className="h-3 w-16" />
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0 text-sm">
-                    <p><span className="font-semibold">{a.who}</span> <span className="text-muted-foreground">{a.what}</span> <span className="font-semibold">{a.target}</span></p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{a.time}</p>
+                ))
+              ) : (
+                activity.map((a, i) => (
+                  <div key={i} className="flex gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <a.icon className="w-4 h-4 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0 text-sm">
+                      <p><span className="font-semibold">{a.who}</span> <span className="text-muted-foreground">{a.what}</span> <span className="font-semibold">{a.target}</span></p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{a.time}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </div>
