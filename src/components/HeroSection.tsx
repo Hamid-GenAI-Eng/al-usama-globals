@@ -44,8 +44,8 @@ const HeroSection = () => {
       <div className="absolute inset-0 z-[1] hero-overlay" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-8 grid md:grid-cols-2 gap-12 items-center">
-        <div className="space-y-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-secondary-container text-secondary-container-foreground rounded-full">
+        <div className="space-y-8 animate-fade-in-up">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-secondary-container text-secondary-container-foreground rounded-full animate-fade-in">
             <span className="text-[10px] font-bold uppercase tracking-widest">Next-Gen Logistics</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-headline font-extrabold tracking-tighter text-foreground leading-[1.1]">
@@ -55,10 +55,10 @@ const HeroSection = () => {
             AL-Usama-Import and Export System empowers enterprise trade with a sophisticated SaaS platform. Manage imports, exports, and compliance with the precision of an architectural ledger.
           </p>
           <div className="flex flex-wrap gap-4">
-            <Link to="/login" className="gradient-primary text-primary-foreground px-8 py-4 rounded-full font-bold shadow-lg hover:opacity-90 transition-all">
+            <Link to="/login" className="gradient-primary text-primary-foreground px-8 py-4 rounded-full font-bold shadow-lg hover-scale hover:shadow-2xl transition-all">
               Get Started Today
             </Link>
-            <Link to="/register" className="bg-surface-container-high text-primary px-8 py-4 rounded-full font-bold hover:bg-surface-container transition-all">
+            <Link to="/register" className="bg-surface-container-high text-primary px-8 py-4 rounded-full font-bold hover-scale hover:bg-surface-container">
               Book a Demo
             </Link>
           </div>
