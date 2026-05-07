@@ -6,7 +6,7 @@ const TestimonialsSection = () => (
       <div className="grid md:grid-cols-2 gap-16 items-center">
         <div className="space-y-8">
           <span className="text-tertiary font-black text-6xl opacity-20">"</span>
-          <p className="text-3xl font-headline font-semibold text-foreground leading-tight italic">
+          <p className="text-3xl font-headline font-semibold text-foreground leading-tight">
             AL-Usama-Import and Export System has completely transformed how we handle our Mediterranean exports. The 'Digital Ledger' approach provides a level of clarity we simply couldn't find elsewhere.
           </p>
           <div className="flex items-center gap-4">
