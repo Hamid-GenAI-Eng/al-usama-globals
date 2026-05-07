@@ -3,8 +3,8 @@ const Footer = () => (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-8 px-8 max-w-7xl mx-auto">
       <div className="space-y-6">
         <div className="text-lg font-black text-foreground uppercase tracking-tighter font-headline">AL-Usama-Import and Export System</div>
-        <p className="text-muted-foreground text-xs leading-relaxed max-w-xs">
-          Redefining global shipping with architectural precision and digital intelligence.
+        <p className="text-sm text-muted-foreground leading-relaxed max-w-xs font-medium">
+          Powering global trade with intelligent logistics, seamless compliance, and real-time visibility.
         </p>
       </div>
       {[
