@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Globe } from "lucide-react";
 import { toast } from "sonner";
@@ -11,7 +11,15 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [keepLoggedIn, setKeepLoggedIn] = useState(false);
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("password1234");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,19 +28,23 @@ const Login = () => {
       return;
     }
 
+    setIsLoading(true);
     try {
       const response = await api.post("/auth/login", { email, password });
-      const { token, role } = response.data.data;
+      const { token, role, fullName } = response.data.data;
 
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
+      localStorage.setItem("user", JSON.stringify({ fullName, email }));
 
-      toast.success("Welcome back");
+      toast.success(`Welcome back, ${fullName}`);
       navigate("/dashboard");
     } catch (error: any) {
       console.error(error);
       const message = error.response?.data?.message || "Login failed. Please check your credentials.";
       toast.error(message);
+    } finally {
+      setIsLoading(false);
     }
   };
 

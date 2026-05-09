@@ -58,7 +58,7 @@ const Dashboard = () => {
         {/* Hero */}
         <div className="rounded-2xl gradient-primary text-primary-foreground p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest opacity-80">Welcome back, Captain Usama</p>
+            <p className="text-xs font-bold uppercase tracking-widest opacity-80">Welcome back, {JSON.parse(localStorage.getItem("user") || '{"fullName":"User"}').fullName}</p>
             <h2 className="text-2xl md:text-3xl font-headline font-extrabold mt-1">Your trade desk is moving fast today.</h2>
             <p className="text-sm opacity-90 mt-2">8 new shipments dispatched, 3 customs declarations awaiting your approval.</p>
           </div>

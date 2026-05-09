@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LayoutDashboard, Ship, Cog, BarChart3, FileText, HelpCircle, LogOut, Bell, MessageSquare, Search, Menu, Users, Building2, ShoppingCart, TrendingUp, Scale, Wallet, ShieldCheck, History, Coins, FileBarChart2, UserCircle2 } from "lucide-react";
 import logo from "@/assets/logo.png";
@@ -32,6 +32,21 @@ const DashboardLayout = ({ children, title, showSearch = false, showTabs = false
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [user, setUser] = useState<{ fullName: string; email: string } | null>(null);
+
+  useEffect(() => {
+    const userStr = localStorage.getItem("user");
+    if (userStr) {
+      setUser(JSON.parse(userStr));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +56,15 @@ const DashboardLayout = ({ children, title, showSearch = false, showTabs = false
   };
 
   const isActive = (path: string) => location.pathname.startsWith(path);
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .substring(0, 2);
+  };
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
@@ -137,11 +161,11 @@ const DashboardLayout = ({ children, title, showSearch = false, showTabs = false
             </button>
             <Link to="/profile" className="flex items-center gap-2">
               <div className="text-right hidden sm:block">
-                <p className="text-sm font-semibold text-foreground">Captain Usama</p>
-                <p className="text-[11px] text-muted-foreground">Fleet Manager</p>
+                <p className="text-sm font-semibold text-foreground">{user?.fullName || "User"}</p>
+                <p className="text-[11px] text-muted-foreground">{localStorage.getItem("role")?.replace("_", " ") || "Member"}</p>
               </div>
               <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
-                <span className="text-sm font-bold text-primary">CU</span>
+                <span className="text-sm font-bold text-primary">{user ? getInitials(user.fullName) : "U"}</span>
               </div>
             </Link>
           </div>

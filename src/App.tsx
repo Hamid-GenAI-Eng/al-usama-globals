@@ -45,6 +45,8 @@ import Reports from "./pages/Reports.tsx";
 import ClientPortal from "./pages/ClientPortal.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
+import ProtectedRoute from "./components/ProtectedRoute.tsx";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -54,52 +56,55 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/profile" element={<ProfileSettings />} />
-          <Route path="/shipments" element={<ShipmentList />} />
-          <Route path="/shipments/create" element={<CreateShipment />} />
-          <Route path="/shipments/search" element={<SearchResults />} />
-          <Route path="/shipments/:id" element={<ShipmentDetails />} />
-          <Route path="/shipments/:id/tracking" element={<ShipmentTracking />} />
-          <Route path="/shipments/:id/edit" element={<CreateShipment />} />
-          <Route path="/documents" element={<Documents />} />
-          <Route path="/documents/upload" element={<UploadDocument />} />
-          <Route path="/documents/:id" element={<DocumentDetails />} />
-          <Route path="/suppliers" element={<Suppliers />} />
-          <Route path="/suppliers/create" element={<SupplierForm />} />
-          <Route path="/suppliers/:id" element={<SupplierDetails />} />
-          <Route path="/suppliers/:id/edit" element={<SupplierForm />} />
-          <Route path="/buyers" element={<Buyers />} />
-          <Route path="/buyers/create" element={<BuyerForm />} />
-          <Route path="/buyers/:id" element={<BuyerDetails />} />
-          <Route path="/buyers/:id/edit" element={<BuyerForm />} />
-          <Route path="/orders/purchase" element={<PurchaseOrders />} />
-          <Route path="/orders/purchase/create" element={<PurchaseOrderForm />} />
-          <Route path="/orders/purchase/:id" element={<PurchaseOrderDetails />} />
-          <Route path="/orders/purchase/:id/edit" element={<PurchaseOrderForm />} />
-          <Route path="/orders/sales" element={<SalesOrders />} />
-          <Route path="/orders/sales/create" element={<SalesOrderForm />} />
-          <Route path="/orders/sales/:id" element={<SalesOrderDetails />} />
-          <Route path="/orders/sales/:id/edit" element={<SalesOrderForm />} />
-          <Route path="/customs/hs-codes" element={<HSCodeLookup />} />
-          <Route path="/customs/duty-calculator" element={<DutyCalculator />} />
-          <Route path="/customs/weboc" element={<WEBOCDeclaration />} />
-          <Route path="/finance" element={<FinancialDashboard />} />
-          <Route path="/analytics" element={<Analytics />} />
-          <Route path="/admin/users" element={<RBACAdmin />} />
-          <Route path="/notifications" element={<Notifications />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/support" element={<Support />} />
-          <Route path="/admin/audit-log" element={<AuditLog />} />
-          <Route path="/finance/exchange-rates" element={<ExchangeRates />} />
-          <Route path="/reports" element={<Reports />} />
-          <Route path="/client/portal" element={<ClientPortal />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+
+          {/* Protected Routes */}
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
+          <Route path="/shipments" element={<ProtectedRoute><ShipmentList /></ProtectedRoute>} />
+          <Route path="/shipments/create" element={<ProtectedRoute><CreateShipment /></ProtectedRoute>} />
+          <Route path="/shipments/search" element={<ProtectedRoute><SearchResults /></ProtectedRoute>} />
+          <Route path="/shipments/:id" element={<ProtectedRoute><ShipmentDetails /></ProtectedRoute>} />
+          <Route path="/shipments/:id/tracking" element={<ProtectedRoute><ShipmentTracking /></ProtectedRoute>} />
+          <Route path="/shipments/:id/edit" element={<ProtectedRoute><CreateShipment /></ProtectedRoute>} />
+          <Route path="/documents" element={<ProtectedRoute><Documents /></ProtectedRoute>} />
+          <Route path="/documents/upload" element={<ProtectedRoute><UploadDocument /></ProtectedRoute>} />
+          <Route path="/documents/:id" element={<ProtectedRoute><DocumentDetails /></ProtectedRoute>} />
+          <Route path="/suppliers" element={<ProtectedRoute><Suppliers /></ProtectedRoute>} />
+          <Route path="/suppliers/create" element={<ProtectedRoute><SupplierForm /></ProtectedRoute>} />
+          <Route path="/suppliers/:id" element={<ProtectedRoute><SupplierDetails /></ProtectedRoute>} />
+          <Route path="/suppliers/:id/edit" element={<ProtectedRoute><SupplierForm /></ProtectedRoute>} />
+          <Route path="/buyers" element={<ProtectedRoute><Buyers /></ProtectedRoute>} />
+          <Route path="/buyers/create" element={<ProtectedRoute><BuyerForm /></ProtectedRoute>} />
+          <Route path="/buyers/:id" element={<ProtectedRoute><BuyerDetails /></ProtectedRoute>} />
+          <Route path="/buyers/:id/edit" element={<ProtectedRoute><BuyerForm /></ProtectedRoute>} />
+          <Route path="/orders/purchase" element={<ProtectedRoute><PurchaseOrders /></ProtectedRoute>} />
+          <Route path="/orders/purchase/create" element={<ProtectedRoute><PurchaseOrderForm /></ProtectedRoute>} />
+          <Route path="/orders/purchase/:id" element={<ProtectedRoute><PurchaseOrderDetails /></ProtectedRoute>} />
+          <Route path="/orders/purchase/:id/edit" element={<ProtectedRoute><PurchaseOrderForm /></ProtectedRoute>} />
+          <Route path="/orders/sales" element={<ProtectedRoute><SalesOrders /></ProtectedRoute>} />
+          <Route path="/orders/sales/create" element={<ProtectedRoute><SalesOrderForm /></ProtectedRoute>} />
+          <Route path="/orders/sales/:id" element={<ProtectedRoute><SalesOrderDetails /></ProtectedRoute>} />
+          <Route path="/orders/sales/:id/edit" element={<ProtectedRoute><SalesOrderForm /></ProtectedRoute>} />
+          <Route path="/customs/hs-codes" element={<ProtectedRoute><HSCodeLookup /></ProtectedRoute>} />
+          <Route path="/customs/duty-calculator" element={<ProtectedRoute><DutyCalculator /></ProtectedRoute>} />
+          <Route path="/customs/weboc" element={<ProtectedRoute><WEBOCDeclaration /></ProtectedRoute>} />
+          <Route path="/finance" element={<ProtectedRoute><FinancialDashboard /></ProtectedRoute>} />
+          <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+          <Route path="/admin/users" element={<ProtectedRoute><RBACAdmin /></ProtectedRoute>} />
+          <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+          <Route path="/support" element={<ProtectedRoute><Support /></ProtectedRoute>} />
+          <Route path="/admin/audit-log" element={<ProtectedRoute><AuditLog /></ProtectedRoute>} />
+          <Route path="/finance/exchange-rates" element={<ProtectedRoute><ExchangeRates /></ProtectedRoute>} />
+          <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
+          <Route path="/client/portal" element={<ProtectedRoute><ClientPortal /></ProtectedRoute>} />
+          
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

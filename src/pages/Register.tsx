@@ -4,19 +4,46 @@ import { Building2, Lock, ArrowRight, ShieldCheck, BarChart3, Globe, HelpCircle 
 import { toast } from "sonner";
 import registerMap from "@/assets/register-map.jpg";
 import AuthFooter from "@/components/AuthFooter";
+import api from "@/lib/api";
 
 const Register = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({ business: "", admin: "", email: "", password: "" });
-  const onSubmit = (e: React.FormEvent) => {
+
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.business.trim() || !form.admin.trim() || !form.email.trim() || form.password.length < 8) {
       toast.error("Please fill all fields. Password must be at least 8 characters.");
       return;
     }
-    toast.success("Account created. Welcome aboard!");
-    navigate("/dashboard");
+
+    setIsLoading(true);
+    try {
+      const response = await api.post("/auth/register", {
+        email: form.email,
+        password: form.password,
+        fullName: form.admin,
+        role: "MASTER_ADMIN"
+      });
+
+      const { token, role, fullName, email } = response.data.data;
+      
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", role);
+      localStorage.setItem("user", JSON.stringify({ fullName, email }));
+
+      toast.success("Account created. Welcome aboard!");
+      navigate("/dashboard");
+    } catch (error: any) {
+      console.error(error);
+      const message = error.response?.data?.message || "Registration failed. Please try again.";
+      toast.error(message);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Navbar */}
@@ -130,9 +157,10 @@ const Register = () => {
 
               <button
                 type="submit"
-                className="w-full gradient-primary text-primary-foreground py-4 rounded-full font-headline font-bold text-base flex items-center justify-center gap-2 hover:opacity-90 transition-all"
+                disabled={isLoading}
+                className="w-full gradient-primary text-primary-foreground py-4 rounded-full font-headline font-bold text-base flex items-center justify-center gap-2 hover:opacity-90 transition-all disabled:opacity-50"
               >
-                Register Account
+                {isLoading ? "Creating Account..." : "Register Account"}
                 <ArrowRight className="w-5 h-5" />
               </button>
             </form>
