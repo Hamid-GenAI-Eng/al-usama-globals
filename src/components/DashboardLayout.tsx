@@ -159,7 +159,7 @@ const DashboardLayout = ({ children, title, showSearch = false, showTabs = false
             <button className="text-muted-foreground hover:text-foreground">
               <MessageSquare className="w-5 h-5" />
             </button>
-            <Link to="/profile" className="flex items-center gap-2">
+            <Link to="/settings" className="flex items-center gap-2">
               <div className="text-right hidden sm:block">
                 <p className="text-sm font-semibold text-foreground">{user?.fullName || "User"}</p>
                 <p className="text-[11px] text-muted-foreground">{localStorage.getItem("role")?.replace("_", " ") || "Member"}</p>
