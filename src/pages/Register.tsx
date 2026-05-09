@@ -24,6 +24,7 @@ const Register = () => {
         email: form.email,
         password: form.password,
         fullName: form.admin,
+        businessName: form.business,
         role: "MASTER_ADMIN"
       });
 
