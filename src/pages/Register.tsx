@@ -30,9 +30,9 @@ const Register = () => {
 
       const { token, role, fullName, email } = response.data.data;
       
-      localStorage.setItem("token", token);
-      localStorage.setItem("role", role);
-      localStorage.setItem("user", JSON.stringify({ fullName, email }));
+      sessionStorage.setItem("token", token);
+      sessionStorage.setItem("role", role);
+      sessionStorage.setItem("user", JSON.stringify({ fullName, email }));
 
       toast.success("Account created. Welcome aboard!");
       navigate("/dashboard");

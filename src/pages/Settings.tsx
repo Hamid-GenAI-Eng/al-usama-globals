@@ -14,7 +14,7 @@ const tabs = [
 ];
 
 const Settings = () => {
-  const userRole = localStorage.getItem("role");
+  const userRole = sessionStorage.getItem("role");
   const [active, setActive] = useState("profile");
   const [loading, setLoading] = useState(false);
   
@@ -77,8 +77,8 @@ const Settings = () => {
       toast.success("Profile updated successfully");
       
       // Update local storage too
-      const user = JSON.parse(localStorage.getItem("user") || "{}");
-      localStorage.setItem("user", JSON.stringify({ ...user, ...profile }));
+      const user = JSON.parse(sessionStorage.getItem("user") || "{}");
+      sessionStorage.setItem("user", JSON.stringify({ ...user, ...profile }));
     } catch (error: any) {
       const msg = error.response?.data?.message || "Failed to update profile";
       toast.error(msg);

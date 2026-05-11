@@ -35,16 +35,16 @@ const DashboardLayout = ({ children, title, showSearch = false, showTabs = false
   const [user, setUser] = useState<{ fullName: string; email: string } | null>(null);
 
   useEffect(() => {
-    const userStr = localStorage.getItem("user");
+    const userStr = sessionStorage.getItem("user");
     if (userStr) {
       setUser(JSON.parse(userStr));
     }
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("role");
+    sessionStorage.removeItem("user");
     navigate("/login");
   };
 
@@ -162,7 +162,7 @@ const DashboardLayout = ({ children, title, showSearch = false, showTabs = false
             <Link to="/settings" className="flex items-center gap-2">
               <div className="text-right hidden sm:block">
                 <p className="text-sm font-semibold text-foreground">{user?.fullName || "User"}</p>
-                <p className="text-[11px] text-muted-foreground">{localStorage.getItem("role")?.replace("_", " ") || "Member"}</p>
+                <p className="text-[11px] text-muted-foreground">{sessionStorage.getItem("role")?.replace("_", " ") || "Member"}</p>
               </div>
               <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
                 <span className="text-sm font-bold text-primary">{user ? getInitials(user.fullName) : "U"}</span>

@@ -16,7 +16,7 @@ const Login = () => {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (localStorage.getItem("token")) {
+    if (sessionStorage.getItem("token")) {
       navigate("/dashboard");
     }
   }, [navigate]);
@@ -33,9 +33,9 @@ const Login = () => {
       const response = await api.post("/auth/login", { email, password });
       const { token, role, fullName } = response.data.data;
 
-      localStorage.setItem("token", token);
-      localStorage.setItem("role", role);
-      localStorage.setItem("user", JSON.stringify({ fullName, email }));
+      sessionStorage.setItem("token", token);
+      sessionStorage.setItem("role", role);
+      sessionStorage.setItem("user", JSON.stringify({ fullName, email }));
 
       toast.success(`Welcome back, ${fullName}`);
       navigate("/dashboard");
