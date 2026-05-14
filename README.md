@@ -4,7 +4,7 @@
 
 **A modern, production-ready web application built with React 18, TypeScript & Shadcn/ui**
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-al--usama--global.vercel.app-black?style=flat-square&logo=vercel)](https://al-usama-global.vercel.app)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-al--usama--global.works-black?style=flat-square&logo=vercel)](https://al-usama-global.works)
 [![TypeScript](https://img.shields.io/badge/TypeScript-98.7%25-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.3-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-Build%20Tool-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vite.dev/)
@@ -18,7 +18,7 @@
 
 Al Usama Globals is a full-featured React application shipping a rich, component-driven UI with a battle-tested modern stack. Built with strict TypeScript, powered by TanStack Query for async state, and validated with React Hook Form + Zod — it's the kind of setup you'd see in a serious production codebase.
 
-🔗 **Live:** [al-usama-global.vercel.app](https://al-usama-global.vercel.app)
+🔗 **Live:** [al-usama-global.works](https://al-usama-global.works)
 
 ---
 
@@ -125,7 +125,7 @@ Deployed on **Vercel** with automatic CI/CD. Every push to `main` triggers a fre
 
 ## Built By
 
-**Hamid Saifullah** — UI/UX & Tech Lead at [Code Envision Technologies](https://github.com/Hamid-GenAI-Eng)
+**Hamid Saifullah** — Tech Lead at [Code Envision Technologies](https://codeenvisiontechnologies.com)
 
 [![GitHub](https://img.shields.io/badge/GitHub-Hamid--GenAI--Eng-181717?style=flat-square&logo=github)](https://github.com/Hamid-GenAI-Eng)
 [![Portfolio](https://img.shields.io/badge/Portfolio-hamid--saifullah-black?style=flat-square&logo=vercel)](https://hamid-saifullah-portfolio-nexus.vercel.app)
